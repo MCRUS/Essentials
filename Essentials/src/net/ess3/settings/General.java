@@ -22,7 +22,7 @@ public class General implements StorageObject
 		"If this is not set, Essentials will use the language of your computer.",
 		"Available locales: da, de, en, fr, nl"
 	})
-	private String locale;
+	private String locale = "ru";
 	@Comment(
 	{
 		"The number of items given, if the quantity parameter is left out in /item or /give.",
