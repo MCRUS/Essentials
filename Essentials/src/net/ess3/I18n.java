@@ -54,11 +54,11 @@ public class I18n implements II18n
 		{
 			try
 			{
-				return new String(customBundle.getString(string).getBytes(), "UTF8");
+				return new String(customBundle.getString(string).getBytes("ISO-8859-1"), "UTF8");
 			}
 			catch (MissingResourceException ex)
 			{
-				return new String(localeBundle.getString(string).getBytes(), "UTF8");
+				return new String(localeBundle.getString(string).getBytes("ISO-8859-1"), "UTF8");
 			}
 		}
 		catch (MissingResourceException ex)
