@@ -1,9 +1,6 @@
 package net.ess3;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -57,11 +54,11 @@ public class I18n implements II18n
 		{
 			try
 			{
-				return customBundle.getString(string);
+				return new String(customBundle.getString(string).getBytes(), "UTF8");
 			}
 			catch (MissingResourceException ex)
 			{
-				return localeBundle.getString(string);
+				return new String(localeBundle.getString(string).getBytes(), "UTF8");
 			}
 		}
 		catch (MissingResourceException ex)
@@ -69,6 +66,9 @@ public class I18n implements II18n
 			Logger.getLogger("Minecraft").log(Level.WARNING, String.format("Missing translation key \"%s\" in translation file %s", ex.getKey(), localeBundle.getLocale().toString()), ex);
 			return defaultBundle.getString(string);
 		}
+        catch (UnsupportedEncodingException ex) {
+            return defaultBundle.getString(string);
+        }
 	}
 
 	public static String _(final String string, final Object... objects)
