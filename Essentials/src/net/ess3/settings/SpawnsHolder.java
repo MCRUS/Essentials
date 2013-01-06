@@ -1,10 +1,19 @@
 package net.ess3.settings;
 
+import static net.ess3.I18n._;
 import java.io.File;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
-import static net.ess3.I18n._;
+import org.bukkit.*;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.plugin.EventExecutor;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IEssentialsModule;
 import net.ess3.api.ISettings;
@@ -15,15 +24,6 @@ import net.ess3.utils.textreader.IText;
 import net.ess3.utils.textreader.KeywordReplacer;
 import net.ess3.utils.textreader.SimpleTextInput;
 import net.ess3.utils.textreader.SimpleTextPager;
-import org.bukkit.*;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.EventExecutor;
 
 
 public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IEssentialsModule
@@ -35,17 +35,29 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 		registerListeners();
 	}
 
+	/**
+	 * Sets a spawn location
+	 *
+	 * @param loc   - Location you want to set as spawn
+	 * @param group - Group to save it undr in the config
+	 */
 	public void setSpawn(final Location loc, final String group)
 	{
 		getData().addSpawn(group, loc);
 		queueSave();
 
-		if ("default".equalsIgnoreCase(group))
+		if (group.equalsIgnoreCase("default"))
 		{
 			loc.getWorld().setSpawnLocation(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 		}
 	}
 
+	/**
+	 * Get the spawn for a group from the config
+	 *
+	 * @param group - Group name
+	 * @return
+	 */
 	public Location getSpawn(final String group)
 	{
 		if (getData().getSpawns() == null || group == null)
@@ -72,6 +84,11 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 		}
 	}
 
+	/**
+	 * Gets the World spawn location
+	 *
+	 * @return
+	 */
 	private Location getWorldSpawn()
 	{
 		for (World world : ess.getServer().getWorlds())
@@ -85,6 +102,11 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 		return ess.getServer().getWorlds().get(0).getSpawnLocation();
 	}
 
+	/**
+	 * Get re-spawn listen priority
+	 *
+	 * @return
+	 */
 	public EventPriority getRespawnPriority()
 	{
 		for (EventPriority priority : EventPriority.values())
@@ -97,10 +119,14 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 		return EventPriority.NORMAL;
 	}
 
+	/**
+	 * Get the newbie spawn from the config
+	 *
+	 * @return
+	 */
 	public Location getNewbieSpawn()
 	{
-		if (getData().getNewbieSpawn() == null || getData().getNewbieSpawn().isEmpty()
-			|| getData().getNewbieSpawn().equalsIgnoreCase("none"))
+		if (getData().getNewbieSpawn() == null || getData().getNewbieSpawn().isEmpty() || getData().getNewbieSpawn().equalsIgnoreCase("none"))
 		{
 			return null;
 		}
@@ -114,14 +140,19 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 
 	public String getAnnounceNewPlayerFormat(IUser user)
 	{
-		return getData().getNewPlayerAnnouncement().replace('&', '\u00a7').replace("\u00a7\u00a7", "&").replace("{PLAYER}", user.getPlayer().getDisplayName()).replace("{DISPLAYNAME}", user.getPlayer().getDisplayName()).replace("{GROUP}", ess.getRanks().getMainGroup(user)).replace("{USERNAME}", user.getName()).replace("{ADDRESS}", user.getPlayer().getAddress().toString());
+		return getData().getNewPlayerAnnouncement().replace('&', '\u00a7').replace("\u00a7\u00a7", "&").replace(
+				"{PLAYER}", user.getPlayer().getDisplayName()).replace(
+				"{DISPLAYNAME}", user.getPlayer().getDisplayName()).replace("{GROUP}", ess.getRanks().getMainGroup(user)).replace(
+				"{USERNAME}", user.getName()).replace(
+				"{ADDRESS}", user.getPlayer().getAddress().toString());
 	}
 
 	//TODO: Why is this stuff here in the settings folder?
 	private void registerListeners()
 	{
 		final SpawnPlayerListener playerListener = new SpawnPlayerListener(ess, this);
-		ess.getServer().getPluginManager().registerEvent(PlayerRespawnEvent.class, playerListener, getRespawnPriority(), new EventExecutor()
+		ess.getServer().getPluginManager().registerEvent(
+				PlayerRespawnEvent.class, playerListener, getRespawnPriority(), new EventExecutor()
 		{
 			@Override
 			public void execute(final Listener ll, final Event event) throws EventException
@@ -129,7 +160,8 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 				((SpawnPlayerListener)ll).onPlayerRespawn((PlayerRespawnEvent)event);
 			}
 		}, ess.getPlugin());
-		ess.getServer().getPluginManager().registerEvent(PlayerJoinEvent.class, playerListener, getRespawnPriority(), new EventExecutor()
+		ess.getServer().getPluginManager().registerEvent(
+				PlayerJoinEvent.class, playerListener, getRespawnPriority(), new EventExecutor()
 		{
 			@Override
 			public void execute(final Listener ll, final Event event) throws EventException
@@ -140,7 +172,7 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 	}
 
 
-	private class SpawnPlayerListener implements Listener
+	private class SpawnPlayerListener implements Listener // TODO: What is this for?
 	{
 		private final transient IEssentials ess;
 		private final transient SpawnsHolder spawns;

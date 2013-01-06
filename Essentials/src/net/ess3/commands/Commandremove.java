@@ -1,12 +1,13 @@
 package net.ess3.commands;
 
-import java.util.Locale;
 import static net.ess3.I18n._;
-import net.ess3.api.IUser;
+import java.util.Locale;
 import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
+import net.ess3.api.IUser;
+
 
 //Todo: Fix this up
 public class Commandremove extends EssentialsCommand
@@ -28,7 +29,7 @@ public class Commandremove extends EssentialsCommand
 		{
 			throw new NotEnoughArgumentsException();
 		}
-		ToRemove toRemove;
+		final ToRemove toRemove;
 		final World world = user.getPlayer().getWorld();
 		int radius = 0;
 
@@ -63,14 +64,13 @@ public class Commandremove extends EssentialsCommand
 		{
 			throw new NotEnoughArgumentsException();
 		}
-		World world;
-		world = ess.getWorld(args[1]);
+		final World world = ess.getWorld(args[1]);
 
 		if (world == null)
 		{
 			throw new Exception(_("invalidWorld"));
 		}
-		ToRemove toRemove;
+		final ToRemove toRemove;
 		try
 		{
 			toRemove = ToRemove.valueOf(args[0].toUpperCase(Locale.ENGLISH));
@@ -89,6 +89,7 @@ public class Commandremove extends EssentialsCommand
 		{
 			radius *= radius;
 		}
+
 		for (Chunk chunk : world.getLoadedChunks())
 		{
 			for (Entity e : chunk.getEntities())
@@ -100,54 +101,52 @@ public class Commandremove extends EssentialsCommand
 						continue;
 					}
 				}
-				if (toRemove == ToRemove.DROPS)
+				switch (toRemove)
 				{
+				case DROPS:
 					if (e instanceof Item)
 					{
 						e.remove();
 						removed++;
 					}
-				}
-				else if (toRemove == ToRemove.ARROWS)
-				{
+					break;
+				case ARROWS:
 					if (e instanceof Projectile)
 					{
 						e.remove();
 						removed++;
 					}
-				}
-				else if (toRemove == ToRemove.BOATS)
-				{
+					break;
+				case BOATS:
 					if (e instanceof Boat)
 					{
 						e.remove();
 						removed++;
 					}
-				}
-				else if (toRemove == ToRemove.MINECARTS)
-				{
+					break;
+				case MINECARTS:
 					if (e instanceof Minecart)
 					{
 						e.remove();
 						removed++;
 					}
-				}
-				else if (toRemove == ToRemove.XP)
-				{
-					if (e instanceof ExperienceOrb)
-					{
-						e.remove();
-						removed++;
-					}
-				}
-				else if (toRemove == ToRemove.PAINTINGS)
-				{
+					break;
+				case PAINTINGS:
 					if (e instanceof Painting)
 					{
 						e.remove();
 						removed++;
 					}
+					break;
+				case XP:
+					if (e instanceof ExperienceOrb)
+					{
+						e.remove();
+						removed++;
+					}
+					break;
 				}
+
 			}
 		}
 		sender.sendMessage(_("removed", removed));

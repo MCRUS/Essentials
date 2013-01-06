@@ -2,6 +2,7 @@ package net.ess3.commands;
 
 import static net.ess3.I18n._;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
 
@@ -10,10 +11,11 @@ public class Commandfly extends EssentialsToggleCommand
 {
 	protected void setValue(final IUser player, final boolean value)
 	{
-		player.getPlayer().setAllowFlight(value);
-		if (!player.getPlayer().getAllowFlight())
+		final Player realPlayer = player.getPlayer();
+		realPlayer.setAllowFlight(value);
+		if (!realPlayer.getAllowFlight())
 		{
-			player.getPlayer().setFlying(false);
+			realPlayer.setFlying(false);
 		}
 	}
 

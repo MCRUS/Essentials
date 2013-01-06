@@ -5,14 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-import net.ess3.api.IEssentials;
 import org.bukkit.Bukkit;
+import net.ess3.api.IEssentials;
 
 
 public abstract class AbstractDelayedYamlFileWriter implements Runnable
 {
 	private final transient IEssentials ess;
-	private final transient ReentrantLock lock = new ReentrantLock();
+	private final transient ReentrantLock lock = new ReentrantLock(); // TODO: Needed?
 
 	public AbstractDelayedYamlFileWriter(final IEssentials ess)
 	{

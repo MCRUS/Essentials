@@ -1,8 +1,9 @@
 package net.ess3;
 
+import static net.ess3.I18n._;
 import java.io.File;
 import java.util.*;
-import static net.ess3.I18n._;
+import org.bukkit.Location;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IWarp;
 import net.ess3.api.IWarps;
@@ -10,7 +11,6 @@ import net.ess3.api.InvalidNameException;
 import net.ess3.commands.WarpNotFoundException;
 import net.ess3.settings.WarpHolder;
 import net.ess3.storage.StorageObjectMap;
-import org.bukkit.Location;
 
 
 public class Warps extends StorageObjectMap<IWarp> implements IWarps
@@ -32,7 +32,7 @@ public class Warps extends StorageObjectMap<IWarp> implements IWarps
 		final List<String> names = new ArrayList<String>();
 		for (String key : getAllKeys())
 		{
-			IWarp warp = getObject(key);
+			final IWarp warp = getObject(key);
 			if (warp == null)
 			{
 				continue;
@@ -46,7 +46,7 @@ public class Warps extends StorageObjectMap<IWarp> implements IWarps
 	@Override
 	public Location getWarp(final String name) throws Exception
 	{
-		IWarp warp = getObject(name);
+		final IWarp warp = getObject(name);
 		if (warp == null)
 		{
 			throw new WarpNotFoundException(_("warpNotExist"));
@@ -92,7 +92,7 @@ public class Warps extends StorageObjectMap<IWarp> implements IWarps
 	}
 
 
-	private static class StringIgnoreCase
+	private static class StringIgnoreCase // TODO: USed?
 	{
 		private final String string;
 

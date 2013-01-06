@@ -1,8 +1,8 @@
 package net.ess3.commands;
 
 import static net.ess3.I18n._;
-import net.ess3.api.IUser;
 import org.bukkit.command.CommandSender;
+import net.ess3.api.IUser;
 
 
 public class Commandbanip extends EssentialsCommand
@@ -29,7 +29,7 @@ public class Commandbanip extends EssentialsCommand
 			{
 				throw new Exception(_("playerNotFound"));
 			}
-			ess.getServer().banIP(player.getData().getIpAddress());
+			ess.getServer().banIP(ipAddress);
 			sender.sendMessage(_("banIpAddress"));
 		}
 	}

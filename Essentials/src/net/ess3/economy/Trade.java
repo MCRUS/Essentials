@@ -1,5 +1,6 @@
 package net.ess3.economy;
 
+import static net.ess3.I18n._;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,15 +10,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static net.ess3.I18n._;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 import net.ess3.api.ChargeException;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
 import net.ess3.craftbukkit.InventoryWorkaround;
 import net.ess3.permissions.Permissions;
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 
 
 public class Trade
@@ -66,33 +66,24 @@ public class Trade
 
 	public void isAffordableFor(final IUser user) throws ChargeException
 	{
-		if (getMoney() != null
-			&& getMoney() > 0
-			&& !Permissions.ECO_LOAN.isAuthorized(user)
-			&& !user.canAfford(getMoney()))
+		if (getMoney() != null && getMoney() > 0 && !Permissions.ECO_LOAN.isAuthorized(user) && !user.canAfford(getMoney()))
 		{
 			throw new ChargeException(_("notEnoughMoney"));
 		}
 
-		if (getItemStack() != null
-			&& InventoryWorkaround.containsItem(user.getPlayer().getInventory(), true, true, itemStack))
+		if (getItemStack() != null && InventoryWorkaround.containsItem(user.getPlayer().getInventory(), true, true, itemStack))
 		{
-			throw new ChargeException(_("missingItems", getItemStack().getAmount(), getItemStack().getType().toString().toLowerCase(Locale.ENGLISH).replace("_", " ")));
+			throw new ChargeException(
+					_("missingItems", getItemStack().getAmount(), getItemStack().getType().toString().toLowerCase(Locale.ENGLISH).replace("_", " ")));
 		}
 
 
-		final ISettings settings = ess.getSettings();
-
-		double money;
-		if (command != null && !command.isEmpty()
-			&& 0 < (money = getCommandCost(user))
-			&& !Permissions.ECO_LOAN.isAuthorized(user))
+		if (command != null && !command.isEmpty() && 0 < getCommandCost(user) && !Permissions.ECO_LOAN.isAuthorized(user))
 		{
 			throw new ChargeException(_("notEnoughMoney"));
 		}
 
-		if (exp != null && exp > 0
-			&& user.getPlayer().getTotalExperience() < exp)
+		if (exp != null && exp > 0 && user.getPlayer().getTotalExperience() < exp)
 		{
 			throw new ChargeException(_("notEnoughExperience"));
 		}
@@ -163,13 +154,13 @@ public class Trade
 		{
 			if (!InventoryWorkaround.containsItem(user.getPlayer().getInventory(), true, true, itemStack))
 			{
-				throw new ChargeException(_("missingItems", getItemStack().getAmount(), getItemStack().getType().toString().toLowerCase(Locale.ENGLISH).replace("_", " ")));
+				throw new ChargeException(
+						_("missingItems", getItemStack().getAmount(), getItemStack().getType().toString().toLowerCase(Locale.ENGLISH).replace("_", " ")));
 			}
 			InventoryWorkaround.removeItem(user.getPlayer().getInventory(), true, true, getItemStack());
 			user.getPlayer().updateInventory();
 		}
-		if (command != null && !command.isEmpty()
-			&& !Permissions.NOCOMMANDCOST.isAuthorized(user, command))
+		if (command != null && !command.isEmpty() && !Permissions.NOCOMMANDCOST.isAuthorized(user, command))
 		{
 
 			final ISettings settings = ess.getSettings();
@@ -209,17 +200,18 @@ public class Trade
 	public Double getCommandCost(final IUser user)
 	{
 		double cost = 0d;
-		if (command != null && !command.isEmpty()
-			&& !Permissions.NOCOMMANDCOST.isAuthorized(user, command))
+		if (command != null && !command.isEmpty() && !Permissions.NOCOMMANDCOST.isAuthorized(user, command))
 		{
 			cost = ess.getSettings().getData().getEconomy().getCommandCost(command.charAt(0) == '/' ? command.substring(1) : command);
 			if (cost == 0.0 && fallbackCommand != null && !fallbackCommand.isEmpty())
 			{
-				cost = ess.getSettings().getData().getEconomy().getCommandCost(fallbackCommand.charAt(0) == '/' ? fallbackCommand.substring(1) : fallbackCommand);
+				cost = ess.getSettings().getData().getEconomy().getCommandCost(
+						fallbackCommand.charAt(0) == '/' ? fallbackCommand.substring(1) : fallbackCommand);
 			}
 		}
 		return cost;
 	}
+
 	private static FileWriter fw = null;
 
 	public static void log(String type, String subtype, String event, String sender, Trade charge, String receiver, Trade pay, Location loc, IEssentials ess)
@@ -240,7 +232,7 @@ public class Trade
 				Logger.getLogger("Minecraft").log(Level.SEVERE, null, ex);
 			}
 		}
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(type).append(",").append(subtype).append(",").append(event).append(",\"");
 		sb.append(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL).format(new Date()));
 		sb.append("\",\"");
@@ -288,9 +280,10 @@ public class Trade
 		{
 			if (pay.getItemStack() != null)
 			{
-				sb.append(pay.getItemStack().getAmount()).append(",");
-				sb.append(pay.getItemStack().getType().toString()).append(",");
-				sb.append(pay.getItemStack().getDurability());
+				final ItemStack is = pay.getItemStack();
+				sb.append(is.getAmount()).append(",");
+				sb.append(is.getType().toString()).append(",");
+				sb.append(is.getDurability());
 			}
 			if (pay.getMoney() != null)
 			{

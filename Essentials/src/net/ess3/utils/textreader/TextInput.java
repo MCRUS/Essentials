@@ -4,12 +4,11 @@ import java.io.*;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.logging.Level;
+import org.bukkit.command.CommandSender;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IUser;
 import net.ess3.api.InvalidNameException;
 import net.ess3.utils.Util;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 
 public class TextInput implements IText
@@ -51,7 +50,7 @@ public class TextInput implements IText
 			synchronized (cache)
 			{
 				final SoftReference<TextInput> inputRef = cache.get(file.getName());
-				TextInput input;
+				final TextInput input;
 				if (inputRef == null || (input = inputRef.get()) == null || input.lastChange < lastChange)
 				{
 					lines = new ArrayList<String>();
@@ -118,10 +117,14 @@ public class TextInput implements IText
 				}
 				finally
 				{
-                    if(output != null)
-					output.close();
-                    if(input != null)
-					input.close();
+					if (output != null)
+					{
+						output.close();
+					}
+					if (input != null)
+					{
+						input.close();
+					}
 				}
 				throw new FileNotFoundException("File " + filename + ".txt does not exist. Creating one for you.");
 			}

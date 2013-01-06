@@ -94,10 +94,11 @@ public class FakeInventory implements Inventory {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public HashMap<Integer, ? extends ItemStack> all(int i) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	@Override
+	public HashMap<Integer, ? extends ItemStack> all(int i)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
     @Override
     public HashMap<Integer, ? extends ItemStack> all(Material mtrl) {
@@ -124,15 +125,18 @@ public class FakeInventory implements Inventory {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public int firstEmpty() {
-        for (int i = 0; i < items.length; i++) {
-            if (items[i] == null || items[i].getTypeId() == 0) {
-                return i;
-            }
-        }
-        return -1;
-    }
+	@Override
+	public int firstEmpty()
+	{
+		for (int i = 0; i < items.length; i++)
+		{
+			if (items[i] == null || items[i].getTypeId() == 0)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
 
     @Override
     public void remove(int i) {
@@ -196,12 +200,14 @@ public class FakeInventory implements Inventory {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    @Override
-    public ListIterator<ItemStack> iterator(int index) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	@Override
+	public ListIterator<ItemStack> iterator(int index)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 
-    public boolean containsAtLeast(ItemStack item, int amount) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+	public boolean containsAtLeast(ItemStack arg0, int arg1)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

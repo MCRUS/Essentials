@@ -1,11 +1,11 @@
 package net.ess3.commands;
 
-import java.lang.management.ManagementFactory;
 import static net.ess3.I18n._;
-import net.ess3.utils.DateUtil;
+import java.lang.management.ManagementFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import net.ess3.utils.DateUtil;
 
 
 public class Commandgc extends EssentialsCommand
@@ -27,16 +27,17 @@ public class Commandgc extends EssentialsCommand
 		{
 			color = ChatColor.RED;
 		}
+		final Runtime runtime = Runtime.getRuntime();
 		sender.sendMessage(_("uptime", DateUtil.formatDateDiff(ManagementFactory.getRuntimeMXBean().getStartTime())));
 		sender.sendMessage(_("tps", "" + color + tps));
-		sender.sendMessage(_("gcmax", (Runtime.getRuntime().maxMemory() / 1024 / 1024)));
-		sender.sendMessage(_("gctotal", (Runtime.getRuntime().totalMemory() / 1024 / 1024)));
-		sender.sendMessage(_("gcfree", (Runtime.getRuntime().freeMemory() / 1024 / 1024)));
-		sender.sendMessage(_("gcquene", (ess.getStorageQueue().getQueueSize()))); 
+		sender.sendMessage(_("gcmax", (runtime.maxMemory() / 1024 / 1024)));
+		sender.sendMessage(_("gctotal", (runtime.totalMemory() / 1024 / 1024)));
+		sender.sendMessage(_("gcfree", (runtime.freeMemory() / 1024 / 1024)));
+		sender.sendMessage(_("gcquene", (ess.getStorageQueue().getQueueSize())));
 
 		for (World w : server.getWorlds())
 		{
-			String worldType = "World";
+			final String worldType;
 			switch (w.getEnvironment())
 			{
 			case NETHER:
@@ -45,12 +46,14 @@ public class Commandgc extends EssentialsCommand
 			case THE_END:
 				worldType = "The End";
 				break;
+			default:
+				worldType = "World";
+				break;
+
 			}
 
 			sender.sendMessage(
-					worldType + " \"" + w.getName() + "\": "
-					+ w.getLoadedChunks().length + _("gcchunks")
-					+ w.getEntities().size() + _("gcentities"));
+					worldType + " \"" + w.getName() + "\": " + w.getLoadedChunks().length + _("gcchunks") + w.getEntities().size() + _("gcentities"));
 		}
 	}
 }

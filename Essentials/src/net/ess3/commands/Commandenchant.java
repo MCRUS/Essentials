@@ -1,16 +1,17 @@
 package net.ess3.commands;
 
+import static net.ess3.I18n._;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import static net.ess3.I18n._;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import net.ess3.api.IUser;
 import net.ess3.bukkit.Enchantments;
 import net.ess3.permissions.Permissions;
 import net.ess3.utils.Util;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
 
 
 public class Commandenchant extends EssentialsCommand
@@ -71,8 +72,9 @@ public class Commandenchant extends EssentialsCommand
 				stack.addEnchantment(enchantment, level);
 			}
 		}
-		user.getPlayer().getInventory().setItemInHand(stack);
-		user.getPlayer().updateInventory();
+		final Player player = user.getPlayer();
+		player.getInventory().setItemInHand(stack);
+		player.updateInventory();
 		final String enchantmentName = enchantment.getName().toLowerCase(Locale.ENGLISH);
 		if (level == 0)
 		{

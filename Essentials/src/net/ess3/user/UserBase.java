@@ -1,6 +1,18 @@
 package net.ess3.user;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.Plugin;
 import lombok.Delegate;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
@@ -11,15 +23,6 @@ import net.ess3.storage.AsyncStorageObjectHolder;
 import net.ess3.storage.IStorageObjectHolder;
 import net.ess3.storage.StoredLocation.WorldNotLoadedException;
 import net.ess3.utils.Util;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.Permission;
-import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.plugin.Plugin;
 
 
 public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implements OfflinePlayer, CommandSender, IStorageObjectHolder<UserData>
@@ -37,7 +40,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 	@Override
 	public void sendMessage(String string)
 	{
-		Player player = offlinePlayer.getPlayer();
+		final Player player = offlinePlayer.getPlayer();
 		if (player != null)
 		{
 			player.sendMessage(string);
@@ -47,7 +50,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 	@Override
 	public void sendMessage(String[] strings)
 	{
-		Player player = offlinePlayer.getPlayer();
+		final Player player = offlinePlayer.getPlayer();
 		if (player != null)
 		{
 			player.sendMessage(strings);
@@ -63,7 +66,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 	@Override
 	public boolean isPermissionSet(String string)
 	{
-		Player player = offlinePlayer.getPlayer();
+		final Player player = offlinePlayer.getPlayer();
 		if (player != null)
 		{
 			return player.isPermissionSet(string);
@@ -77,7 +80,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 	@Override
 	public boolean isPermissionSet(Permission prmsn)
 	{
-		Player player = offlinePlayer.getPlayer();
+		final Player player = offlinePlayer.getPlayer();
 		if (player != null)
 		{
 			return player.isPermissionSet(prmsn);
@@ -91,7 +94,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 	@Override
 	public boolean hasPermission(String string)
 	{
-		Player player = offlinePlayer.getPlayer();
+		final Player player = offlinePlayer.getPlayer();
 		if (player != null)
 		{
 			return player.hasPermission(string);
@@ -105,7 +108,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 	@Override
 	public boolean hasPermission(Permission prmsn)
 	{
-		Player player = offlinePlayer.getPlayer();
+		final Player player = offlinePlayer.getPlayer();
 		if (player != null)
 		{
 			return player.hasPermission(prmsn);
@@ -174,13 +177,15 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 
 		final ISettings settings = ess.getSettings();
 
-		if (Math.abs(value) > settings.getData().getEconomy().getMaxMoney())
+		final UserData data = getData();
+		final double maxMoney = settings.getData().getEconomy().getMaxMoney();
+		if (Math.abs(value) > maxMoney)
 		{
-			getData().setMoney(value < 0 ? -settings.getData().getEconomy().getMaxMoney() : settings.getData().getEconomy().getMaxMoney());
+			data.setMoney(value < 0 ? -maxMoney : maxMoney);
 		}
 		else
 		{
-			getData().setMoney(value);
+			data.setMoney(value);
 		}
 		queueSave();
 	}
@@ -230,7 +235,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 
 	public boolean toggleTeleportEnabled()
 	{
-		boolean ret = !getData().isTeleportEnabled();
+		final boolean ret = !getData().isTeleportEnabled();
 		getData().setTeleportEnabled(ret);
 		queueSave();
 		return ret;
@@ -238,7 +243,8 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 
 	public boolean isIgnoringPlayer(final IUser user)
 	{
-		return getData().getIgnore() == null ? false : getData().getIgnore().contains(user.getName().toLowerCase(Locale.ENGLISH)) && Permissions.CHAT_IGNORE_EXEMPT.isAuthorized(user);
+		return getData().getIgnore() == null ? false : getData().getIgnore().contains(
+				user.getName().toLowerCase(Locale.ENGLISH)) && Permissions.CHAT_IGNORE_EXEMPT.isAuthorized(user);
 	}
 
 	public void setIgnoredPlayer(final IUser user, final boolean set)
@@ -309,7 +315,7 @@ public abstract class UserBase extends AsyncStorageObjectHolder<UserData> implem
 		for (Location location : worldHomes)
 		{
 			final double d = loc.distanceSquared(location);
-			if (d < distance)
+			if (d < distance) // Shouldnt this just use Double.isInfinite(v); rather than create a new Double of maxval?
 			{
 				target = location;
 				distance = d;

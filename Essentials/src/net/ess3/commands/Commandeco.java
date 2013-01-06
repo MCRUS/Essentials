@@ -1,11 +1,11 @@
 package net.ess3.commands;
 
-import java.util.Locale;
 import static net.ess3.I18n._;
-import net.ess3.api.ISettings;
-import net.ess3.api.IUser;
+import java.util.Locale;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import net.ess3.api.ISettings;
+import net.ess3.api.IUser;
 
 
 public class Commandeco extends EssentialsCommand
@@ -17,8 +17,8 @@ public class Commandeco extends EssentialsCommand
 		{
 			throw new NotEnoughArgumentsException();
 		}
-		EcoCommands cmd;
-		double amount;
+		final EcoCommands cmd;
+		final double amount;
 		try
 		{
 			cmd = EcoCommands.valueOf(args[0].toUpperCase(Locale.ENGLISH));
@@ -65,7 +65,7 @@ public class Commandeco extends EssentialsCommand
 		else if (args[1].contentEquals("*"))
 		{
 			boolean ecoResetAllOnline = false;
-			ISettings settings = ess.getSettings();
+			final ISettings settings = ess.getSettings();
 			for (Player onlinePlayer : server.getOnlinePlayers())
 			{
 				final IUser player = ess.getUserMap().getUser(onlinePlayer);

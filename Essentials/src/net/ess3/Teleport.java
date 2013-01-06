@@ -1,9 +1,11 @@
 package net.ess3;
 
+import static net.ess3.I18n._;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.logging.Logger;
-import static net.ess3.I18n._;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ITeleport;
 import net.ess3.api.IUser;
@@ -14,9 +16,6 @@ import net.ess3.user.UserData.TimestampType;
 import net.ess3.utils.DateUtil;
 import net.ess3.utils.LocationUtil;
 import net.ess3.utils.Target;
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 
 public class Teleport implements Runnable, ITeleport
@@ -26,8 +25,8 @@ public class Teleport implements Runnable, ITeleport
 	private IUser user;
 	private IUser teleportUser;
 	private int teleTimer = -1;
-	private long started;	// time this task was initiated
-	private long tpDelay;		// how long to delay the teleport
+	private long started;    // time this task was initiated
+	private long tpDelay;        // how long to delay the teleport
 	private int health;
 	// note that I initially stored a clone of the location for reference, but...
 	// when comparing locations, I got incorrect mismatches (rounding errors, looked like)
@@ -38,14 +37,13 @@ public class Teleport implements Runnable, ITeleport
 	private Target teleportTarget;
 	private Trade chargeFor;
 	private final IEssentials ess;
-	private static final Logger logger = Logger.getLogger("Minecraft");
 	private TeleportCause cause;
 
 	private void initTimer(long delay, Target target, Trade chargeFor, TeleportCause cause)
 	{
 		initTimer(delay, user, target, chargeFor, cause);
 	}
-	
+
 	private void initTimer(long delay, IUser teleportUser, Target target, Trade chargeFor, TeleportCause cause)
 	{
 		this.started = System.currentTimeMillis();
@@ -69,26 +67,25 @@ public class Teleport implements Runnable, ITeleport
 			cancel();
 			return;
 		}
-		
+
 		if (teleportUser == null || !teleportUser.isOnline() || teleportUser.getPlayer().getLocation() == null)
 		{
 			cancel(false);
 			return;
 		}
-		
-		if (!Permissions.TELEPORT_TIMER_MOVE.isAuthorized(user) 
-			&&(Math.round(teleportUser.getPlayer().getLocation().getX() * MOVE_CONSTANT) != initX
-			|| Math.round(teleportUser.getPlayer().getLocation().getY() * MOVE_CONSTANT) != initY
-			|| Math.round(teleportUser.getPlayer().getLocation().getZ() * MOVE_CONSTANT) != initZ
-			|| teleportUser.getPlayer().getHealth() < health))
-		{	// user moved, cancel teleport
+
+		if (!Permissions.TELEPORT_TIMER_MOVE.isAuthorized(user) && (Math.round(
+				teleportUser.getPlayer().getLocation().getX() * MOVE_CONSTANT) != initX || Math.round(
+				teleportUser.getPlayer().getLocation().getY() * MOVE_CONSTANT) != initY || Math.round(
+				teleportUser.getPlayer().getLocation().getZ() * MOVE_CONSTANT) != initZ || teleportUser.getPlayer().getHealth() < health))
+		{    // user moved, cancel teleport
 			cancel(true);
 			return;
 		}
 
 		health = teleportUser.getPlayer().getHealth();  // in case user healed, then later gets injured
 
-		long now = System.currentTimeMillis();
+		final long now = System.currentTimeMillis();
 		if (now > started + tpDelay)
 		{
 			try
@@ -126,7 +123,6 @@ public class Teleport implements Runnable, ITeleport
 		this.ess = ess;
 	}
 
-	
 
 	public void cooldown(boolean check) throws Exception
 	{
@@ -170,7 +166,7 @@ public class Teleport implements Runnable, ITeleport
 	{
 		cancel(false);
 	}
-	
+
 	@Override
 	public void teleport(Location loc, Trade chargeFor, TeleportCause cause) throws Exception
 	{
@@ -185,7 +181,7 @@ public class Teleport implements Runnable, ITeleport
 
 	private void teleport(Target target, Trade chargeFor, TeleportCause cause) throws Exception
 	{
-		double delay = ess.getRanks().getTeleportDelay(user);
+		final double delay = ess.getRanks().getTeleportDelay(user);
 
 		if (chargeFor != null)
 		{
@@ -216,14 +212,15 @@ public class Teleport implements Runnable, ITeleport
 		cancel();
 		user.setLastLocation();
 		final Location loc = LocationUtil.getSafeDestination(target.getLocation());
-		ess.getPlugin().scheduleSyncDelayedTask(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				user.getPlayer().teleport(loc, cause);
-			}
-		});
+		ess.getPlugin().scheduleSyncDelayedTask(
+				new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						user.getPlayer().teleport(loc, cause);
+					}
+				});
 	}
 
 	@Override
@@ -236,7 +233,7 @@ public class Teleport implements Runnable, ITeleport
 		now(new Target(loc), cause);
 	}
 
-	
+
 	@Override
 	//The now function is used when you want to skip tp delay when teleporting someone to a location or player.
 	public void now(Entity entity, boolean cooldown, TeleportCause cause) throws Exception
@@ -247,18 +244,18 @@ public class Teleport implements Runnable, ITeleport
 		}
 		now(new Target(entity), cause);
 	}
-	
+
 	public void now(Location loc, Trade chargeFor, TeleportCause cause) throws Exception
 	{
 		cooldown(false);
 		chargeFor.charge(user);
 		now(new Target(loc), cause);
 	}
-	
+
 	//The teleportToMe function is a wrapper used to handle teleporting players to them, like /tphere
 	public void teleportToMe(IUser otherUser, Trade chargeFor, TeleportCause cause) throws Exception
 	{
-		Target target = new Target(user.getPlayer());
+		final Target target = new Target(user.getPlayer());
 
 		double delay = ess.getRanks().getTeleportDelay(user);
 
@@ -275,7 +272,8 @@ public class Teleport implements Runnable, ITeleport
 			{
 				chargeFor.charge(user);
 			}
-			return;		}
+			return;
+		}
 
 		cancel(false);
 		warnUser(otherUser, delay);
@@ -283,27 +281,28 @@ public class Teleport implements Runnable, ITeleport
 
 		teleTimer = ess.getPlugin().scheduleSyncRepeatingTask(this, 10, 10);
 	}
-	
+
 	private void warnUser(final IUser user, final double delay)
 	{
-		Calendar c = new GregorianCalendar();
+		final Calendar c = new GregorianCalendar();
 		c.add(Calendar.SECOND, (int)delay);
 		c.add(Calendar.MILLISECOND, (int)((delay * 1000.0) % 1000.0));
 		user.sendMessage(_("dontMoveMessage", DateUtil.formatDateDiff(c.getTimeInMillis())));
 	}
-	
+
 	@Override
 	public void respawn(final Trade chargeFor, TeleportCause cause) throws Exception
 	{
 		final Location bed = user.getBedSpawnLocation();
-		final Location respawnLoc = ess.getPlugin().callRespawnEvent(user.getPlayer(), bed == null ? user.getPlayer().getWorld().getSpawnLocation() : bed, bed != null);
+		final Location respawnLoc = ess.getPlugin().callRespawnEvent(
+				user.getPlayer(), bed == null ? user.getPlayer().getWorld().getSpawnLocation() : bed, bed != null);
 		teleport(new Target(respawnLoc), chargeFor, cause);
 	}
 
 	@Override
 	public void warp(String warp, Trade chargeFor, TeleportCause cause) throws Exception
 	{
-		final Location loc = ess.getWarps().getWarp(warp);		
+		final Location loc = ess.getWarps().getWarp(warp);
 		user.sendMessage(_("warpingTo", warp));
 		teleport(new Target(loc), chargeFor, cause);
 	}

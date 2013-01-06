@@ -1,14 +1,15 @@
 package net.ess3.commands;
 
+import static net.ess3.I18n._;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import static net.ess3.I18n._;
-import net.ess3.api.IUser;
-import net.ess3.permissions.Permissions;
-import net.ess3.utils.Util;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import net.ess3.api.IUser;
+import net.ess3.permissions.Permissions;
+import net.ess3.user.UserData;
+import net.ess3.utils.Util;
 
 
 public class Commandpowertool extends EssentialsCommand
@@ -17,11 +18,11 @@ public class Commandpowertool extends EssentialsCommand
 	protected void run(final IUser user, final String commandLabel, final String[] args) throws Exception
 	{
 		String command = getFinalArg(args, 0);
-
+		UserData userData = user.getData();
 		// check to see if this is a clear all command
 		if (command != null && command.equalsIgnoreCase("d:"))
 		{
-			user.getData().clearAllPowertools();
+			userData.clearAllPowertools();
 			user.queueSave();
 			user.sendMessage(_("powerToolClearAll"));
 			return;
@@ -34,7 +35,7 @@ public class Commandpowertool extends EssentialsCommand
 		}
 
 		final String itemName = itemStack.getType().toString().toLowerCase(Locale.ENGLISH).replaceAll("_", " ");
-		List<String> powertools = user.getData().getPowertool(itemStack.getType());
+		List<String> powertools = userData.getPowertool(itemStack.getType());
 		if (command != null && !command.isEmpty())
 		{
 			if (command.equalsIgnoreCase("l:"))
@@ -56,7 +57,7 @@ public class Commandpowertool extends EssentialsCommand
 				{
 					throw new Exception(_("powerToolNoSuchCommandAssigned", command, itemName));
 				}
-				
+
 				powertools = new ArrayList<String>(powertools);
 				powertools.remove(command);
 				user.sendMessage(_("powerToolRemove", command, itemName));
@@ -91,12 +92,12 @@ public class Commandpowertool extends EssentialsCommand
 			user.sendMessage(_("powerToolRemoveAll", itemName));
 		}
 
-		if (!user.getData().isPowerToolsEnabled())
+		if (!userData.isPowerToolsEnabled())
 		{
-			user.getData().setPowerToolsEnabled(true);
+			userData.setPowerToolsEnabled(true);
 			user.sendMessage(_("powerToolsEnabled"));
 		}
-		user.getData().setPowertool(itemStack.getType(), powertools);
+		userData.setPowertool(itemStack.getType(), powertools);
 		user.queueSave();
 	}
 }

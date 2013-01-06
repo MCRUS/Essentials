@@ -1,26 +1,22 @@
 package net.ess3.commands;
 
+import static net.ess3.I18n._;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static net.ess3.I18n._;
-import net.ess3.api.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.PluginCommandYamlParser;
-import org.bukkit.command.TabExecutor;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import net.ess3.api.*;
 
 
 public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 {
 	private final transient ClassLoader classLoader;
 	private final transient String commandPath;
-	private final transient String permissionPrefix;
+	private final transient String permissionPrefix;// TODO: Needed?
 	private final transient IEssentialsModule module;
 	private static final transient Logger LOGGER = Bukkit.getLogger();
 	private final transient Map<String, List<PluginCommand>> altcommands = new HashMap<String, List<PluginCommand>>();
@@ -100,7 +96,7 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 				return true;
 			}
 
-			final String commandName = command.getName().toLowerCase(Locale.ENGLISH);
+			final String commandName = command.getName().toLowerCase(Locale.ENGLISH); // TODO: Isn't this just the commandLable
 			IEssentialsCommand cmd = commands.get(commandName);
 			if (cmd == null)
 			{
@@ -110,7 +106,8 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 					cmd.init(ess, commandName);
 					cmd.setEssentialsModule(module);
 					commands.put(commandName, cmd);
-					if (command instanceof PluginCommand) {
+					if (command instanceof PluginCommand)
+					{
 						((PluginCommand)command).setExecutor(this);
 					}
 				}
@@ -222,7 +219,7 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 				}
 			}
 		}
-		
+
 		try
 		{
 			// Check for disabled commands
@@ -241,7 +238,8 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 					cmd.init(ess, commandName);
 					cmd.setEssentialsModule(module);
 					commands.put(commandName, cmd);
-					if (command instanceof PluginCommand) {
+					if (command instanceof PluginCommand)
+					{
 						((PluginCommand)command).setExecutor(this);
 					}
 				}

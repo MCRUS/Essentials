@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import net.ess3.api.IEssentials;
-import net.ess3.api.IUser;
-import net.ess3.utils.DescParseTickFormat;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import net.ess3.api.IEssentials;
+import net.ess3.api.IUser;
+import net.ess3.utils.DescParseTickFormat;
 
 
 public class KeywordReplacer implements IText
@@ -37,16 +37,18 @@ public class KeywordReplacer implements IText
 		if (sender instanceof IUser)
 		{
 			final IUser user = (IUser)sender;
-			displayName = user.getPlayer().getDisplayName();
-			userName = user.getPlayer().getName();
-			ipAddress = user.getPlayer().getAddress() == null || user.getPlayer().getAddress().getAddress() == null ? "" : user.getPlayer().getAddress().getAddress().toString();
-			address = user.getPlayer().getAddress() == null ? "" : user.getPlayer().getAddress().toString();
+			final Player player = user.getPlayer();
+			displayName = player.getDisplayName();
+			userName = player.getName();
+			ipAddress = player.getAddress() == null || player.getAddress().getAddress() == null ? "" : player.getAddress().getAddress().toString();
+			address = player.getAddress() == null ? "" : player.getAddress().toString();
 			balance = Double.toString(user.getMoney());
 			mails = Integer.toString(user.getData().getMails() == null ? 0 : user.getData().getMails().size());
-			world = user.getPlayer().getLocation() == null || user.getPlayer().getLocation().getWorld() == null ? "" : user.getPlayer().getLocation().getWorld().getName();
-			worldTime12 = DescParseTickFormat.format12(user.getPlayer().getWorld() == null ? 0 : user.getPlayer().getWorld().getTime());
-			worldTime24 = DescParseTickFormat.format24(user.getPlayer().getWorld() == null ? 0 : user.getPlayer().getWorld().getTime());
-			worldDate = DateFormat.getDateInstance(DateFormat.MEDIUM, ess.getI18n().getCurrentLocale()).format(DescParseTickFormat.ticksToDate(user.getPlayer().getWorld() == null ? 0 : user.getPlayer().getWorld().getFullTime()));
+			world = player.getLocation() == null || player.getLocation().getWorld() == null ? "" : player.getLocation().getWorld().getName();
+			worldTime12 = DescParseTickFormat.format12(player.getWorld() == null ? 0 : player.getWorld().getTime());
+			worldTime24 = DescParseTickFormat.format24(player.getWorld() == null ? 0 : player.getWorld().getTime());
+			worldDate = DateFormat.getDateInstance(DateFormat.MEDIUM, ess.getI18n().getCurrentLocale()).format(
+					DescParseTickFormat.ticksToDate(player.getWorld() == null ? 0 : player.getWorld().getFullTime()));
 		}
 		else
 		{
@@ -137,6 +139,7 @@ public class KeywordReplacer implements IText
 			line = line.replace("{WORLDDATE}", worldDate);
 			line = line.replace("{PLUGINS}", plugins);
 			line = line.replace("{VERSION}", version);
+			// TODO: Would it be nice to let plugins register with essentials and add these?
 			replaced.add(line);
 		}
 	}

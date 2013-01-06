@@ -28,7 +28,7 @@ public class StorageQueue implements Runnable
 	{
 		synchronized (lock)
 		{
-			List<WriteRequest> requests = new ArrayList<WriteRequest>();
+			final List<WriteRequest> requests = new ArrayList<WriteRequest>();
 			while (enabled.get() || !queue.isEmpty())
 			{
 				try
@@ -36,13 +36,13 @@ public class StorageQueue implements Runnable
 					queue.drainTo(requests);
 					for (WriteRequest request : requests)
 					{
-						RequestState state = request.getRequestState();
+						final RequestState state = request.getRequestState();
 						if (state == RequestState.REQUEUE)
 						{
 							queue.add(request);
 							continue;
 						}
-						if (state == RequestState.SCHEDULE)
+						else if (state == RequestState.SCHEDULE)
 						{
 							plugin.scheduleAsyncDelayedTask(request.getRunnable());
 						}
@@ -62,9 +62,10 @@ public class StorageQueue implements Runnable
 	{
 		if (!enabled.get())
 		{
-			plugin.getLogger().log(Level.SEVERE,
-								   "File " + objectHolder.toString() + " is queued for saving, while the queue is disabled. It's possible that it will not be saved!",
-								   new RuntimeException());
+			plugin.getLogger().log(
+					Level.SEVERE,
+					"File " + objectHolder.toString() + " is queued for saving, while the queue is disabled. It's possible that it will not be saved!",
+					new RuntimeException());
 		}
 		queue.add(new WriteRequest(objectHolder));
 	}

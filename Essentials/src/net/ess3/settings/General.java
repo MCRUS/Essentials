@@ -24,18 +24,18 @@ public class General implements StorageObject
 	})
 	private String locale = "ru";
 	@Comment(
-	{
-		"The number of items given, if the quantity parameter is left out in /item or /give.",
-		"If this number is below 1, the maximum stack size size is given. If oversized stacks",
-		"is not enabled, any number higher then the maximum stack size results in more than one stack."
-	})
+			{
+					"The number of items given, if the quantity parameter is left out in /item or /give.",
+					"If this number is below 1, the maximum stack size size is given. If oversized stacks",
+					"is not enabled, any number higher then the maximum stack size results in more than one stack."
+			})
 	private int defaultStacksize = -1;
 	@Comment(
-	{
-		"Oversized stacks are stacks that ignore the normal max stacksize.",
-		"They can be obtained using /give and /item, if the player has essentials.oversizedstacks permission.",
-		"How many items should be in a oversized stack?"
-	})
+			{
+					"Oversized stacks are stacks that ignore the normal max stacksize.",
+					"They can be obtained using /give and /item, if the player has essentials.oversizedstacks permission.",
+					"How many items should be in a oversized stack?"
+			})
 	private int oversizedStacksize = 64;
 
 
@@ -43,20 +43,21 @@ public class General implements StorageObject
 	{
 		FILE, GROUPMANAGER, VAULT
 	}
+
+
 	@Comment(
-	{
-		"Sets the place where group options should be stored:",
-		" FILE: Options are stored inside groups.yml in the Essentials folder",
-		" GROUPMANAGER: Options are stored using the GroupManager groups",
-		" VAULT: Options are stored using a permissions plugin supported by Vault"
-	})
+			{
+					"Sets the place where group options should be stored:", " FILE: Options are stored inside groups.yml in the Essentials folder",
+					" GROUPMANAGER: Options are stored using the GroupManager groups",
+					" VAULT: Options are stored using a permissions plugin supported by Vault"
+			})
 	private GroupStorage groupStorage = GroupStorage.FILE;
 	@Comment(
-	{
-		"Set to true to enable per-world permissions for teleporting between worlds with essentials commands",
-		"This applies to /world, /back, /tp[a|o][here|all], but not warps.",
-		"Give someone permission to teleport to a world with essentials.world.<worldname>"
-	})
+			{
+					"Set to true to enable per-world permissions for teleporting between worlds with essentials commands",
+					"This applies to /world, /back, /tp[a|o][here|all], but not warps.",
+					"Give someone permission to teleport to a world with essentials.world.<worldname>"
+			})
 	private boolean worldTeleportPermissions = false;
 	private boolean worldHomePermissions = false;
 	@Comment("Delay to wait before people can cause attack damage after logging in ")
@@ -71,6 +72,7 @@ public class General implements StorageObject
 	{
 		this.loginAttackDelay = loginAttackDelay / 1000;
 	}
+
 	private Boolean metricsEnabled = null;
 	@Comment("The join message when players join the server")
 	private String joinMessage = "&e{PLAYER} вошел на сервер";

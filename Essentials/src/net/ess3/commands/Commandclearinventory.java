@@ -1,11 +1,11 @@
 package net.ess3.commands;
 
-import java.util.List;
 import static net.ess3.I18n._;
-import net.ess3.api.IUser;
-import net.ess3.permissions.Permissions;
+import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import net.ess3.api.IUser;
+import net.ess3.permissions.Permissions;
 
 
 public class Commandclearinventory extends EssentialsCommand
@@ -18,8 +18,9 @@ public class Commandclearinventory extends EssentialsCommand
 			IUser p = ess.getUserMap().matchUserExcludingHidden(args[0], getPlayerOrNull(user));
 			if (p != null)
 			{
-				p.getPlayer().getInventory().clear();
-				user.sendMessage(_("inventoryClearedOthers", p.getPlayer().getDisplayName()));
+				final Player player = p.getPlayer();
+				player.getInventory().clear();
+				user.sendMessage(_("inventoryClearedOthers", player.getDisplayName()));
 			}
 			else
 			{
@@ -58,7 +59,7 @@ public class Commandclearinventory extends EssentialsCommand
 		}
 		else
 		{
-			Player u = server.getPlayer(args[0]);
+			final Player u = server.getPlayer(args[0]);
 			if (u != null)
 			{
 				u.getInventory().clear();

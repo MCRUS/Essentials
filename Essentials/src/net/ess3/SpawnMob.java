@@ -1,6 +1,16 @@
 package net.ess3;
 
 import static net.ess3.I18n._;
+import java.util.*;
+import java.util.regex.Pattern;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Server;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.*;
+import org.bukkit.material.Colorable;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
@@ -11,15 +21,7 @@ import net.ess3.permissions.Permissions;
 import net.ess3.user.User;
 import net.ess3.utils.LocationUtil;
 import net.ess3.utils.Util;
-import java.util.*;
-import java.util.regex.Pattern;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Server;
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.*;
-import org.bukkit.material.Colorable;
+
 
 public class SpawnMob
 {
@@ -148,12 +150,14 @@ public class SpawnMob
 
 	private static void spawnMob(final IEssentials ess, final Server server, final CommandSender sender, final IUser target, final Location sloc, EntityType mob, String mobData, EntityType mobMount, String mountData) throws Exception
 	{
-		Entity spawnedMob = sloc.getWorld().spawn(sloc, (Class<? extends LivingEntity>)mob.getEntityClass());
+
+		final World spawningWorld = sloc.getWorld();
+		final Entity spawnedMob = spawningWorld.spawn(sloc, (Class<? extends LivingEntity>)mob.getEntityClass());
 		Entity spawnedMount = null;
 
 		if (mobMount != null)
 		{
-			spawnedMount = sloc.getWorld().spawn(sloc, (Class<? extends LivingEntity>)mobMount.getEntityClass());
+			spawnedMount = spawningWorld.spawn(sloc, (Class<? extends LivingEntity>)mobMount.getEntityClass());
 			spawnedMob.setPassenger(spawnedMount);
 		}
 		if (mobData != null)

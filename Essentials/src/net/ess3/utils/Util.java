@@ -3,12 +3,12 @@ package net.ess3.utils;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import net.ess3.api.InvalidNameException;
-import net.ess3.utils.gnu.inet.encoding.Punycode;
-import net.ess3.utils.gnu.inet.encoding.PunycodeException;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import net.ess3.api.InvalidNameException;
+import net.ess3.utils.gnu.inet.encoding.Punycode;
+import net.ess3.utils.gnu.inet.encoding.PunycodeException;
 
 
 public final class Util
@@ -16,6 +16,7 @@ public final class Util
 	private Util()
 	{
 	}
+
 	private final static Pattern INVALIDFILECHARS = Pattern.compile("[^\u0020-\u007E\u0085\u00A0-\uD7FF\uE000-\uFFFC]");
 	private final static Pattern INVALIDCHARS = Pattern.compile("[^\t\n\r\u0020-\u007E\u0085\u00A0-\uD7FF\uE000-\uFFFC]");
 
@@ -80,47 +81,50 @@ public final class Util
 
 	public static ItemStack convertBlockToItem(final Block block)
 	{
-		final ItemStack is = new ItemStack(block.getType(), 1, (short)0, block.getData());
+		final ItemStack is = new ItemStack(block.getType(), 1, block.getData());
+		
+		final short durability = 0;
+
 		switch (is.getType())
 		{
 		case WOODEN_DOOR:
 			is.setType(Material.WOOD_DOOR);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case IRON_DOOR_BLOCK:
 			is.setType(Material.IRON_DOOR);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case SIGN_POST:
 		case WALL_SIGN:
 			is.setType(Material.SIGN);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case CROPS:
 			is.setType(Material.SEEDS);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case CAKE_BLOCK:
 			is.setType(Material.CAKE);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case BED_BLOCK:
 			is.setType(Material.BED);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case REDSTONE_WIRE:
 			is.setType(Material.REDSTONE);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case REDSTONE_TORCH_OFF:
 		case REDSTONE_TORCH_ON:
 			is.setType(Material.REDSTONE_TORCH_ON);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case DIODE_BLOCK_OFF:
 		case DIODE_BLOCK_ON:
 			is.setType(Material.DIODE);
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case DOUBLE_STEP:
 			is.setType(Material.STEP);
@@ -146,7 +150,7 @@ public final class Util
 		case FENCE:
 		case FENCE_GATE:
 		case NETHER_FENCE:
-			is.setDurability((short)0);
+			is.setDurability(durability);
 			break;
 		case FIRE:
 			return null;
@@ -195,7 +199,7 @@ public final class Util
 
 			if (each instanceof Collection)
 			{
-				buf.append(joinList(seperator, ((Collection)each).toArray()));
+				buf.append(joinList(seperator, ((Collection<?>)each).toArray()));
 			}
 			else
 			{
@@ -211,4 +215,5 @@ public final class Util
 		}
 		return buf.toString();
 	}
+
 }

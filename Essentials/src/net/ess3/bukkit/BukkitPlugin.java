@@ -1,21 +1,12 @@
 package net.ess3.bukkit;
 
+import static net.ess3.I18n._;
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import net.ess3.Essentials;
-import static net.ess3.I18n._;
-import net.ess3.api.IEssentials;
-import net.ess3.api.IPlugin;
-import net.ess3.listener.EssentialsBlockListener;
-import net.ess3.listener.EssentialsEntityListener;
-import net.ess3.listener.EssentialsPlayerListener;
-import net.ess3.listener.EssentialsPluginListener;
-import net.ess3.metrics.MetricsListener;
-import net.ess3.metrics.MetricsStarter;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -30,6 +21,16 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.scheduler.BukkitTask;
+import net.ess3.Essentials;
+import net.ess3.api.IEssentials;
+import net.ess3.api.IPlugin;
+import net.ess3.listener.EssentialsBlockListener;
+import net.ess3.listener.EssentialsEntityListener;
+import net.ess3.listener.EssentialsPlayerListener;
+import net.ess3.listener.EssentialsPluginListener;
+import net.ess3.metrics.MetricsListener;
+import net.ess3.metrics.MetricsStarter;
 
 
 public class BukkitPlugin extends JavaPlugin implements IPlugin
@@ -61,14 +62,15 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 					getLogger().log(Level.SEVERE, _("essentialsHelp2"));
 				}
 				getLogger().log(Level.SEVERE, ex.toString());
-				pm.registerEvents(new Listener()
-				{
-					@EventHandler(priority = EventPriority.LOW)
-					public void onPlayerJoin(final PlayerJoinEvent event)
-					{
-						event.getPlayer().sendMessage("Essentials failed to load, read the log file.");
-					}
-				}, this);
+				pm.registerEvents(
+						new Listener()
+						{
+							@EventHandler(priority = EventPriority.LOW)
+							public void onPlayerJoin(final PlayerJoinEvent event)
+							{
+								event.getPlayer().sendMessage("Essentials failed to load, read the log file.");
+							}
+						}, this);
 				for (Player player : getServer().getOnlinePlayers())
 				{
 					player.sendMessage("Essentials failed to load, read the log file.");
@@ -100,7 +102,7 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 		final MetricsStarter metricsStarter = new MetricsStarter(ess);
 		if (metricsStarter.getStart() != null && metricsStarter.getStart() == true)
 		{
-			getServer().getScheduler().scheduleAsyncDelayedTask(this, metricsStarter, 1);
+			getServer().getScheduler().runTaskLaterAsynchronously(this, metricsStarter, 1);
 		}
 		else if (metricsStarter.getStart() != null && metricsStarter.getStart() == false)
 		{
@@ -131,9 +133,9 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 	}
 
 	@Override
-	public int scheduleAsyncDelayedTask(final Runnable run)
+	public BukkitTask scheduleAsyncDelayedTask(final Runnable run)
 	{
-		return getServer().getScheduler().scheduleAsyncDelayedTask(this, run);
+		return getServer().getScheduler().runTaskAsynchronously(this, run);
 	}
 
 	@Override
@@ -143,9 +145,9 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 	}
 
 	@Override
-	public int scheduleAsyncDelayedTask(final Runnable run, final long delay)
+	public BukkitTask scheduleAsyncDelayedTask(final Runnable run, final long delay)
 	{
-		return getServer().getScheduler().scheduleAsyncDelayedTask(this, run, delay);
+		return getServer().getScheduler().runTaskLaterAsynchronously(this, run, delay);
 	}
 
 	@Override
@@ -161,9 +163,9 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 	}
 
 	@Override
-	public int scheduleAsyncRepeatingTask(final Runnable run, final long delay, final long period)
+	public BukkitTask scheduleAsyncRepeatingTask(final Runnable run, final long delay, final long period)
 	{
-		return getServer().getScheduler().scheduleAsyncRepeatingTask(this, run, delay, period);
+		return getServer().getScheduler().runTaskTimer(this, run, delay, period);
 	}
 
 	@Override
@@ -179,13 +181,19 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 	}
 
 	@Override
+	public void cancelTask(BukkitTask taskId)
+	{
+		taskId.cancel();
+	}
+
+	@Override
 	public String getVersion()
 	{
 		return getDescription().getVersion();
 	}
 
 	@Override
-	public Class getClassByName(final String name)
+	public Class<?> getClassByName(final String name)
 	{
 		final JavaPluginLoader jpl = (JavaPluginLoader)this.getPluginLoader();
 		return jpl.getClassByName(name);
@@ -221,8 +229,7 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 	@Override
 	public void onPluginEnable(final Plugin plugin)
 	{
-		if (plugin.getName().equals(this.getName())
-			|| !plugin.getName().startsWith("Essentials"))
+		if (plugin.getName().equals(this.getName()) || !plugin.getName().startsWith("Essentials"))
 		{
 			return;
 		}
@@ -231,10 +238,15 @@ public class BukkitPlugin extends JavaPlugin implements IPlugin
 	}
 
 	@Override
+	public void registerModule(Plugin module)
+	{ // TODO: Use, solution for L231
+		modules.put(module.getName().substring(10), module);
+	}
+
+	@Override
 	public void onPluginDisable(final Plugin plugin)
 	{
-		if (plugin.getName().equals(this.getName())
-			|| !plugin.getName().startsWith("Essentials"))
+		if (plugin.getName().equals(this.getName()) || !plugin.getName().startsWith("Essentials"))
 		{
 			return;
 		}

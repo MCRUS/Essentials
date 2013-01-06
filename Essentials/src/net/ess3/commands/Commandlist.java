@@ -1,13 +1,13 @@
 package net.ess3.commands;
 
-import java.util.*;
 import static net.ess3.I18n._;
+import java.util.*;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
 import net.ess3.utils.FormatUtil;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 
 public class Commandlist extends EssentialsCommand
@@ -49,18 +49,17 @@ public class Commandlist extends EssentialsCommand
 
 		sender.sendMessage(online);
 
-		ISettings settings = ess.getSettings();
+		final ISettings settings = ess.getSettings();
 
-		boolean sortListByGroups = sortListByGroups = settings.getData().getCommands().getList().isSortByGroups();
+		final boolean sortListByGroups = settings.getData().getCommands().getList().isSortByGroups();
 
 		if (sortListByGroups)
 		{
-			Map<String, List<IUser>> sort = new HashMap<String, List<IUser>>();
-			Set<String> hiddenPlayers = new HashSet<String>();
+			final Map<String, List<IUser>> sort = new HashMap<String, List<IUser>>();
+			final Set<String> hiddenPlayers = new HashSet<String>();
 			for (Player onlinePlayer : server.getOnlinePlayers())
 			{
-				if (userPlayer != null
-					&& !userPlayer.canSee(onlinePlayer))
+				if (userPlayer != null && !userPlayer.canSee(onlinePlayer))
 				{
 					hiddenPlayers.add(onlinePlayer.getName());
 					if (!showhidden)
@@ -115,11 +114,10 @@ public class Commandlist extends EssentialsCommand
 		else
 		{
 			final List<IUser> users = new ArrayList<IUser>();
-			Set<String> hiddenPlayers = new HashSet<String>();
+			final Set<String> hiddenPlayers = new HashSet<String>();
 			for (Player onlinePlayer : server.getOnlinePlayers())
 			{
-				if (userPlayer != null
-					&& !userPlayer.canSee(onlinePlayer))
+				if (userPlayer != null && !userPlayer.canSee(onlinePlayer))
 				{
 					hiddenPlayers.add(onlinePlayer.getName());
 					if (!showhidden)
