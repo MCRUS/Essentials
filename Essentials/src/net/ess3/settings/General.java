@@ -73,9 +73,9 @@ public class General implements StorageObject
 	}
 	private Boolean metricsEnabled = null;
 	@Comment("The join message when players join the server")
-	private String joinMessage = "&e{PLAYER} has joined the game";
+	private String joinMessage = "&e{PLAYER} вошел на сервер";
 	@Comment("The quit message when players leave the server")
-	private String leaveMessage = "&e{PLAYER} has left the game";
+	private String leaveMessage = "&e{PLAYER} вышел с сервера";
 	@Comment("Enable this to clear powertools when a player disconnects.")
 	private boolean ptClearOnQuit = false;
 	@Comment("Enable this to clear powertools when a player changes worlds.")
