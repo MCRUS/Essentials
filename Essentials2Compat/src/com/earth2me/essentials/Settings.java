@@ -1,24 +1,24 @@
 package com.earth2me.essentials;
 
-import static net.ess3.I18n._;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static net.ess3.I18n._;
+import net.ess3.api.IEssentials;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
-import net.ess3.api.IEssentials;
 
 
-public class Settings implements ISettings
+public final class Settings implements ISettings
 {
-	private final transient EssentialsConf config;
+	private final EssentialsConf config;
 	private final static Logger logger = Logger.getLogger("Minecraft");
-	private final transient IEssentials ess;
+	private final IEssentials ess;
 	private boolean metricsEnabled = true;
 
 	public Settings(IEssentials ess, File file)
@@ -321,7 +321,7 @@ public class Settings implements ISettings
 
 	private Map<String, MessageFormat> chatFormats = Collections.synchronizedMap(new HashMap<String, MessageFormat>());
 
-	/*@Override
+	/*@Override //TODO: implement this
 	public MessageFormat getChatFormat(String group)
 	{
 		MessageFormat mFormat = chatFormats.get(group);

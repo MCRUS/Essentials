@@ -5,14 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import net.ess3.api.IEssentials;
+import org.bukkit.Bukkit;
 
 
 public abstract class AbstractDelayedYamlFileReader<T extends StorageObject> implements Runnable
 {
-	private final transient Class<T> clazz;
-	private final transient IEssentials ess;
+	private final Class<T> clazz;
+	private final IEssentials ess;
 
 	public AbstractDelayedYamlFileReader(final IEssentials ess, final Class<T> clazz)
 	{
@@ -28,7 +28,7 @@ public abstract class AbstractDelayedYamlFileReader<T extends StorageObject> imp
 		}
 		else
 		{
-			ess.getPlugin().scheduleAsyncDelayedTask(this);
+			ess.getPlugin().runTaskAsynchronously(this);
 		}
 	}
 

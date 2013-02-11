@@ -1,26 +1,26 @@
 package net.ess3.chat;
 
-import static net.ess3.I18n._;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import static net.ess3.I18n._;
 import net.ess3.api.*;
 import net.ess3.economy.Trade;
 import net.ess3.permissions.Permissions;
 import net.ess3.utils.FormatUtil;
+import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 
 public abstract class EssentialsChatPlayer implements Listener
 {
-	protected transient IEssentials ess;
+	protected IEssentials ess;
 	protected final static Logger LOGGER = Logger.getLogger("Minecraft");
-	protected final transient Server server;
-	protected final transient Map<AsyncPlayerChatEvent, ChatStore> chatStorage;
+	protected final Server server;
+	protected final Map<AsyncPlayerChatEvent, ChatStore> chatStorage;
 
 	public EssentialsChatPlayer(
 			final Server server, final IEssentials ess, final Map<AsyncPlayerChatEvent, ChatStore> chatStorage)

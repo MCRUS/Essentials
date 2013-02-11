@@ -1,15 +1,15 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import static net.ess3.I18n._;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
 
 
 public class Commandsethome extends EssentialsCommand
 {
-	private final transient Pattern colon = Pattern.compile(":");
+	private final Pattern colon = Pattern.compile(":");
 
 	@Override
 	public void run(final IUser user, final String commandLabel, String[] args) throws Exception

@@ -1,13 +1,13 @@
 package net.ess3.signs.signs;
 
-import static net.ess3.I18n._;
 import java.util.Locale;
-import org.bukkit.GameMode;
+import static net.ess3.I18n._;
 import net.ess3.api.ChargeException;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IUser;
 import net.ess3.economy.Trade;
 import net.ess3.signs.EssentialsSign;
+import org.bukkit.GameMode;
 
 
 public class SignGameMode extends EssentialsSign
@@ -43,7 +43,7 @@ public class SignGameMode extends EssentialsSign
 		}
 		charge.isAffordableFor(player);
 
-		//this needs to be fixed
+		//TODO: this needs to be fixed
 		player.getPlayer().setGameMode(player.getPlayer().getGameMode() == GameMode.SURVIVAL ? GameMode.CREATIVE : GameMode.SURVIVAL);
 		player.sendMessage(_("gameMode", _(player.getPlayer().getGameMode().toString().toLowerCase(Locale.ENGLISH)), player.getPlayer().getDisplayName()));
 		charge.charge(player);

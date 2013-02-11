@@ -5,15 +5,15 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.configuration.file.YamlConfiguration;
 import net.ess3.api.IReload;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 
 public class UserManager implements IReload
 {
-	private transient YamlConfiguration users;
-	private final transient File folder;
-	private final transient List<String> spyusers = new ArrayList<String>();
+	private YamlConfiguration users;
+	private final File folder;
+	private final List<String> spyusers = new ArrayList<String>();
 	private final static String ADDRESS = "address";
 	private final static String SPY = "spy";
 

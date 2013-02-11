@@ -1,17 +1,17 @@
 package net.ess3.utils.textreader;
 
-import static net.ess3.I18n._;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import org.bukkit.command.CommandSender;
 import net.ess3.I18n;
+import static net.ess3.I18n._;
+import org.bukkit.command.CommandSender;
 
 
 public class TextPager
 {
-	private final transient IText text;
-	private final transient boolean onePage;
+	private final IText text;
+	private final boolean onePage;
 
 	public TextPager(final IText text)
 	{

@@ -23,6 +23,7 @@ public class Commands implements StorageObject
 	private SocialSpy socialspy = new SocialSpy();
 	private Spawnmob spawnmob = new Spawnmob();
 	private Teleport teleport = new Teleport();
+	private Tempban tempban = new Tempban();
 	private Speed speed = new Speed();
 	@ListType
 	@Comment(
@@ -40,7 +41,7 @@ public class Commands implements StorageObject
 	@Setter(AccessLevel.NONE)
 	private List<String> overridden = null;
 	@ListType
-	@Comment("Disabled commands will be completelly unavailable on the server.")
+	@Comment("Disabled commands will be completely unavailable on the server.")
 	@Getter(AccessLevel.NONE)
 	@Setter(AccessLevel.NONE)
 	private List<String> disabled = null;

@@ -1,6 +1,5 @@
 package net.ess3.listener;
 
-import static net.ess3.I18n._;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -8,9 +7,22 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import static net.ess3.I18n._;
+import net.ess3.api.IEssentials;
+import net.ess3.api.ISettings;
+import net.ess3.api.IUser;
+import net.ess3.api.IUserMap;
+import net.ess3.permissions.Permissions;
+import net.ess3.settings.Commands;
+import net.ess3.user.UserData.TimestampType;
+import net.ess3.utils.DateUtil;
+import net.ess3.utils.FormatUtil;
+import net.ess3.utils.LocationUtil;
+import net.ess3.utils.textreader.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,24 +35,14 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import net.ess3.api.IEssentials;
-import net.ess3.api.ISettings;
-import net.ess3.api.IUser;
-import net.ess3.api.IUserMap;
-import net.ess3.permissions.Permissions;
-import net.ess3.settings.Commands;
-import net.ess3.user.UserData.TimestampType;
-import net.ess3.utils.FormatUtil;
-import net.ess3.utils.LocationUtil;
-import net.ess3.utils.textreader.*;
 
 
 public class EssentialsPlayerListener implements Listener
 {
 	private static final Logger LOGGER = Logger.getLogger("Minecraft");
-	private final transient Server server;
-	private final transient IEssentials ess;
-	private final transient IUserMap userMap;
+	private final Server server;
+	private final IEssentials ess;
+	private final IUserMap userMap;
 
 	public EssentialsPlayerListener(final IEssentials parent)
 	{
@@ -162,7 +164,7 @@ public class EssentialsPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event)
 	{
-		ess.getPlugin().scheduleAsyncDelayedTask(
+		ess.getPlugin().runTaskAsynchronously(
 				new Runnable()
 				{
 					@Override
@@ -328,6 +330,25 @@ public class EssentialsPlayerListener implements Listener
 				user.sendMessage(_("youHaveNewMail", mail.size()));
 			}
 		}
+		if(Permissions.FLY_SAFELOGIN.isAuthorized(user))
+		{
+			final Location loc = user.getPlayer().getLocation();
+			final World world = loc.getWorld();
+			final int x = loc.getBlockX();
+			int y = loc.getBlockY();
+			final int z = loc.getBlockZ();
+			while(LocationUtil.isBlockUnsafe(world, x, y, z) && y > -1)
+			{
+				y--;
+			}
+
+			if(loc.getBlockY() - y > 1 || y < 0)
+			{
+				user.getPlayer().setAllowFlight(true);
+				user.getPlayer().setFlying(true);
+				user.sendMessage(_("flyMode", _("enabled"), user.getPlayer().getDisplayName()));
+			}
+		}
 	}
 
 
@@ -356,9 +377,17 @@ public class EssentialsPlayerListener implements Listener
 
 		if (!banExpired && (user.isBanned() || event.getResult() == Result.KICK_BANNED))
 		{
-			final String banReason = user.getData().getBan() == null ? "" : user.getData().getBan().getReason();
-			event.disallow(
-					Result.KICK_BANNED, banReason == null || banReason.isEmpty() || banReason.equalsIgnoreCase("ban") ? _("defaultBanReason") : banReason);
+			String banReason = user.getData().getBan().getReason();
+			if (banReason == null || banReason.isEmpty() || banReason.equalsIgnoreCase("ban"))
+			{
+				banReason = _("defaultBanReason");
+			}
+			if (user.getData().getBan().getTimeout() > 0)
+			{
+				//TODO: TL This
+				banReason += "\n\n" + "Expires in " + DateUtil.formatDateDiff(user.getData().getBan().getTimeout());
+			}
+			event.disallow(Result.KICK_BANNED, banReason);
 			return;
 		}
 
@@ -592,7 +621,7 @@ public class EssentialsPlayerListener implements Listener
 		}
 		if (event.getView().getTopInventory().getType() == InventoryType.WORKBENCH)
 		{
-			final IUser user = userMap.getUser((Player)event.getWhoClicked());
+			final IUser user = userMap.getUser((Player) event.getWhoClicked());
 			if (user.isRecipeSee())
 			{
 				event.setCancelled(true);

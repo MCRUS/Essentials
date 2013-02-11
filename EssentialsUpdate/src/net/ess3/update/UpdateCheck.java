@@ -12,14 +12,15 @@ import org.bukkit.plugin.PluginManager;
 
 public class UpdateCheck
 {
-	private transient CheckResult result = CheckResult.UNKNOWN;
-	private transient Version currentVersion;
-	private transient Version newVersion = null;
-	private transient int bukkitResult = 0;
-	private transient UpdateFile updateFile;
+	private CheckResult result = CheckResult.UNKNOWN;
+	private Version currentVersion;
+	private Version newVersion = null;
+	private int bukkitResult = 0;
+	private UpdateFile updateFile;
 	private final static int CHECK_INTERVAL = 20 * 60 * 60 * 6;
-	private final transient Plugin plugin;
-	private transient boolean essentialsInstalled;
+	private final Plugin plugin;
+	private boolean essentialsInstalled;
+	private final Pattern bukkitVersionPattern = Pattern.compile("git-Bukkit-(?:(?:[0-9]+)\\.)+[0-9]+-R[\\.0-9]+-(?:[0-9]+-g[0-9a-f]+-)?b([0-9]+)jnks.*");
 
 	public UpdateCheck(final Plugin plugin)
 	{
@@ -48,7 +49,7 @@ public class UpdateCheck
 
 	public void scheduleUpdateTask()
 	{
-		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(
+		plugin.getServer().getScheduler().scheduleAsyncRepeatingTask( //should probably not be async
 				plugin, new Runnable()
 		{
 			@Override
@@ -188,8 +189,7 @@ public class UpdateCheck
 
 	private int getBukkitVersion()
 	{
-		final Matcher versionMatch = Pattern.compile("git-Bukkit-(?:(?:[0-9]+)\\.)+[0-9]+-R[\\.0-9]+-(?:[0-9]+-g[0-9a-f]+-)?b([0-9]+)jnks.*").matcher(
-				plugin.getServer().getVersion());
+		final Matcher versionMatch = bukkitVersionPattern.matcher(plugin.getServer().getVersion());
 		if (versionMatch.matches())
 		{
 			return Integer.parseInt(versionMatch.group(1));

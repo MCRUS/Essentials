@@ -1,9 +1,15 @@
 package net.ess3.signs;
 
-import static net.ess3.I18n._;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import static net.ess3.I18n._;
+import net.ess3.api.ChargeException;
+import net.ess3.api.IEssentials;
+import net.ess3.api.IUser;
+import net.ess3.economy.Trade;
+import net.ess3.signs.signs.SignException;
+import net.ess3.utils.FormatUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -11,18 +17,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import net.ess3.api.ChargeException;
-import net.ess3.api.IEssentials;
-import net.ess3.api.IUser;
-import net.ess3.economy.Trade;
-import net.ess3.signs.signs.SignException;
-import net.ess3.utils.FormatUtil;
 
 
 public class EssentialsSign
 {
 	private static final Set<Material> EMPTY_SET = new HashSet<Material>();
-	protected transient final String signName;
+	protected final String signName;
 
 	public EssentialsSign(final String signName)
 	{
@@ -254,7 +254,7 @@ public class EssentialsSign
 	{
 		return EMPTY_SET;
 	}
-
+	
 	protected final void validateTrade(final ISign sign, final int index, final IEssentials ess) throws SignException
 	{
 		final String line = sign.getLine(index).trim();
@@ -430,8 +430,8 @@ public class EssentialsSign
 
 	static class EventSign implements ISign
 	{
-		private final transient SignChangeEvent event;
-		private final transient Block block;
+		private final SignChangeEvent event;
+		private final Block block;
 
 		public EventSign(final SignChangeEvent event)
 		{
@@ -466,8 +466,8 @@ public class EssentialsSign
 
 	public static class BlockSign implements ISign
 	{
-		private final transient Sign sign;
-		private final transient Block block;
+		private final Sign sign;
+		private final Block block;
 
 		public BlockSign(final Block block)
 		{

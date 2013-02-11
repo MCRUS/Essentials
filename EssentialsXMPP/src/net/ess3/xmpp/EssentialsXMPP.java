@@ -1,29 +1,29 @@
 package net.ess3.xmpp;
 
-import static net.ess3.I18n._;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static net.ess3.I18n._;
+import net.ess3.api.IEssentials;
+import net.ess3.api.IPlugin;
+import net.ess3.api.IUser;
+import net.ess3.commands.EssentialsCommandHandler;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import net.ess3.api.IEssentials;
-import net.ess3.api.IPlugin;
-import net.ess3.api.IUser;
-import net.ess3.commands.EssentialsCommandHandler;
 
 
 public class EssentialsXMPP extends JavaPlugin implements IEssentialsXMPP
 {
 	private static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private static EssentialsXMPP instance = null;
-	private transient UserManager users;
-	private transient XMPPManager xmpp;
-	private transient IEssentials ess;
-	private transient TabExecutor commandHandler;
+	private UserManager users;
+	private XMPPManager xmpp;
+	private IEssentials ess;
+	private TabExecutor commandHandler;
 
 	public static IEssentialsXMPP getInstance()
 	{

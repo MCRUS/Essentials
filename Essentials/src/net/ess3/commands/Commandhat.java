@@ -1,12 +1,12 @@
 package net.ess3.commands;
 
 import static net.ess3.I18n._;
+import net.ess3.api.IUser;
+import net.ess3.craftbukkit.InventoryWorkaround;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import net.ess3.api.IUser;
-import net.ess3.craftbukkit.InventoryWorkaround;
 
 
 public class Commandhat extends EssentialsCommand
@@ -26,7 +26,7 @@ public class Commandhat extends EssentialsCommand
 			{
 				final ItemStack air = new ItemStack(Material.AIR);
 				inv.setHelmet(air);
-				InventoryWorkaround.addItem(user.getPlayer().getInventory(), true, head);
+				InventoryWorkaround.addItems(user.getPlayer().getInventory(), head);
 				user.sendMessage(_("hatRemoved"));
 			}
 		}
@@ -41,7 +41,7 @@ public class Commandhat extends EssentialsCommand
 					final PlayerInventory inv = player.getInventory();
 					final ItemStack head = inv.getHelmet();
 					hand.setAmount(1);
-					InventoryWorkaround.removeItem(inv, true, true, hand);
+					inv.remove(hand);
 					inv.setHelmet(hand);
 					inv.setItemInHand(head);
 					user.sendMessage(_("hatPlaced"));

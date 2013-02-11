@@ -2,13 +2,13 @@ package net.ess3.update.chat;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import org.bukkit.plugin.Plugin;
 import net.ess3.update.PastieUpload;
+import org.bukkit.plugin.Plugin;
 
 
 public abstract class AbstractFileCommand implements Command
 {
-	private final transient Plugin plugin;
+	private final Plugin plugin;
 	private final static Charset UTF8 = Charset.forName("utf-8");
 
 	public AbstractFileCommand(final Plugin plugin)

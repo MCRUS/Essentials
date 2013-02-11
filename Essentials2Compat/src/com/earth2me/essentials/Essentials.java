@@ -1,11 +1,11 @@
 package com.earth2me.essentials;
 
 import java.io.File;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IItemDb;
 import net.ess3.api.IPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
 
 
 public class Essentials extends JavaPlugin
@@ -18,6 +18,7 @@ public class Essentials extends JavaPlugin
 		Bukkit.getLogger().info("You can remove this compatibility plugin, when all plugins are updated to Essentials-3");
 		//TODO: Update files to new 3.0 format
 		//TODO: Move Eco Api here
+		//TODO: write update methods for itemmeta
 		IPlugin plugin = (IPlugin)getServer().getPluginManager().getPlugin("Essentials-3");
 		ess = plugin.getEssentials();
 		updateSettings();

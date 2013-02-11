@@ -2,20 +2,20 @@ package net.ess3;
 
 import java.util.*;
 import java.util.logging.Level;
-import org.bukkit.entity.Player;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
 import net.ess3.user.UserData.TimestampType;
+import org.bukkit.entity.Player;
 
 
 public class EssentialsTimer implements Runnable
 {
-	private final transient IEssentials ess;
-	private final transient Set<IUser> onlineUsers = new HashSet<IUser>();
-	private transient long lastPoll = System.currentTimeMillis();
-	private final transient LinkedList<Float> history = new LinkedList<Float>();
+	private final IEssentials ess;
+	private final Set<IUser> onlineUsers = new HashSet<IUser>();
+	private long lastPoll = System.currentTimeMillis();
+	private final LinkedList<Float> history = new LinkedList<Float>();
 
 	EssentialsTimer(final IEssentials ess)
 	{

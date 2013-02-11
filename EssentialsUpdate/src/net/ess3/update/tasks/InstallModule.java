@@ -3,18 +3,18 @@ package net.ess3.update.tasks;
 import java.io.File;
 import java.net.URL;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import net.ess3.update.AbstractWorkListener;
 import net.ess3.update.GetFile;
 import net.ess3.update.ModuleInfo;
 import net.ess3.update.VersionInfo;
+import org.bukkit.Bukkit;
 
 
 public class InstallModule implements Runnable, Task
 {
-	protected final transient AbstractWorkListener listener;
-	private final transient String moduleName;
-	private final transient String fileName;
+	protected final AbstractWorkListener listener;
+	private final String moduleName;
+	private final String fileName;
 
 	public InstallModule(final AbstractWorkListener listener, final String moduleName)
 	{
@@ -31,7 +31,7 @@ public class InstallModule implements Runnable, Task
 	@Override
 	public void start()
 	{
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(listener.getPlugin(), this);
+		Bukkit.getScheduler().runTaskAsynchronously(listener.getPlugin(), this); //Should this be async? (method deprecated)
 	}
 
 	@Override
@@ -55,7 +55,6 @@ public class InstallModule implements Runnable, Task
 		{
 			Bukkit.getLogger().log(Level.SEVERE, "Failed to download module " + moduleName + " to " + fileName, ex);
 			listener.onWorkAbort("An error occured, please check your server log.");
-			return;
 		}
 	}
 }

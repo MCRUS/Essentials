@@ -1,8 +1,8 @@
 package net.ess3.commands;
 
 import static net.ess3.I18n._;
-import org.bukkit.command.CommandSender;
 import net.ess3.api.IUser;
+import org.bukkit.command.CommandSender;
 
 
 public class Commandunban extends EssentialsCommand
@@ -19,6 +19,7 @@ public class Commandunban extends EssentialsCommand
 		final IUser player = ess.getUserMap().matchUser(args[0], true);
 		player.getData().setBan(null);
 		player.setBanned(false);
+		player.getData().getBan().setTimeout(0);
 		player.queueSave();
 		sender.sendMessage(_("unbannedPlayer"));
 	}

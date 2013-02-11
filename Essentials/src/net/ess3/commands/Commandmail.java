@@ -1,12 +1,12 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.util.List;
-import org.bukkit.command.CommandSender;
+import static net.ess3.I18n._;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
 import net.ess3.utils.FormatUtil;
 import net.ess3.utils.Util;
+import org.bukkit.command.CommandSender;
 
 
 public class Commandmail extends EssentialsCommand
@@ -56,7 +56,7 @@ public class Commandmail extends EssentialsCommand
 			{
 				throw new Exception(_("noPerm", "essentials.mail.sendall"));
 			}
-			ess.getPlugin().scheduleAsyncDelayedTask(new SendAll(user.getName() + ": " + FormatUtil.stripColor(getFinalArg(args, 1))));
+			ess.getPlugin().runTaskAsynchronously(new SendAll(user.getName() + ": " + FormatUtil.stripColor(getFinalArg(args, 1))));
 			user.sendMessage(_("mailSent"));
 			return;
 		}
@@ -90,7 +90,7 @@ public class Commandmail extends EssentialsCommand
 		}
 		else if (args.length >= 1 && "sendall".equalsIgnoreCase(args[0]))
 		{
-			ess.getPlugin().scheduleAsyncDelayedTask(new SendAll("Server: " + getFinalArg(args, 2)));
+			ess.getPlugin().runTaskAsynchronously(new SendAll("Server: " + getFinalArg(args, 2)));
 		}
 		else if (args.length >= 2)
 		{

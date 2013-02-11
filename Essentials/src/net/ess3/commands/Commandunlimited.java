@@ -1,13 +1,13 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.util.Locale;
 import java.util.Set;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
+import static net.ess3.I18n._;
 import net.ess3.api.IUser;
 import net.ess3.craftbukkit.InventoryWorkaround;
 import net.ess3.permissions.Permissions;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 
 public class Commandunlimited extends EssentialsCommand
@@ -90,9 +90,10 @@ public class Commandunlimited extends EssentialsCommand
 		{
 			message = "enableUnlimited";
 			enableUnlimited = true;
-			if (!InventoryWorkaround.containsItem(target.getPlayer().getInventory(), true, true, stack))
+
+			if (!target.getPlayer().getInventory().contains(stack))
 			{
-				InventoryWorkaround.addItem(target.getPlayer().getInventory(), false, stack);
+				InventoryWorkaround.addItems(target.getPlayer().getInventory(), stack);
 			}
 		}
 

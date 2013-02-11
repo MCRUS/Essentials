@@ -1,17 +1,17 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.util.Locale;
 import java.util.regex.Pattern;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
+import static net.ess3.I18n._;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 
 
 public class Commanditem extends EssentialsCommand
 {
-	private final transient Pattern data = Pattern.compile("[:+',;.]");
+	private final Pattern data = Pattern.compile("[:+',;.]");
 
 	@Override
 	public void run(final IUser user, final String commandLabel, final String[] args) throws Exception

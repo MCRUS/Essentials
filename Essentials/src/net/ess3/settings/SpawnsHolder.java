@@ -1,19 +1,10 @@
 package net.ess3.settings;
 
-import static net.ess3.I18n._;
 import java.io.File;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
-import org.bukkit.*;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventException;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.plugin.EventExecutor;
+import static net.ess3.I18n._;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IEssentialsModule;
 import net.ess3.api.ISettings;
@@ -24,6 +15,15 @@ import net.ess3.utils.textreader.IText;
 import net.ess3.utils.textreader.KeywordReplacer;
 import net.ess3.utils.textreader.SimpleTextInput;
 import net.ess3.utils.textreader.SimpleTextPager;
+import org.bukkit.*;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.plugin.EventExecutor;
 
 
 public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IEssentialsModule
@@ -174,8 +174,8 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 
 	private class SpawnPlayerListener implements Listener // TODO: What is this for?
 	{
-		private final transient IEssentials ess;
-		private final transient SpawnsHolder spawns;
+		private final IEssentials ess;
+		private final SpawnsHolder spawns;
 
 		public SpawnPlayerListener(final IEssentials ess, final SpawnsHolder spawns)
 		{
@@ -240,7 +240,7 @@ public class SpawnsHolder extends AsyncStorageObjectHolder<Spawns> implements IE
 
 		private class NewPlayerTeleport implements Runnable
 		{
-			private final transient IUser user;
+			private final IUser user;
 
 			public NewPlayerTeleport(final IUser user)
 			{

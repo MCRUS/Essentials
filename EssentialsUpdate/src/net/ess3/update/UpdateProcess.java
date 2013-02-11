@@ -1,27 +1,27 @@
 package net.ess3.update;
 
 import java.util.logging.Level;
+import net.ess3.update.states.InstallationFinishedEvent;
+import net.ess3.update.states.StateMachine;
+import net.ess3.update.tasks.SelfUpdate;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerChatEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
-import net.ess3.update.states.InstallationFinishedEvent;
-import net.ess3.update.states.StateMachine;
-import net.ess3.update.tasks.SelfUpdate;
 
 
 // TODO: This whole thing should make use of the conversations api
 public class UpdateProcess implements Listener
 {
-	private transient Player currentPlayer;
-	private final transient Plugin plugin;
-	private final transient UpdateCheck updateCheck;
-	private transient StateMachine stateMachine;
+	private Player currentPlayer;
+	private final Plugin plugin;
+	private final UpdateCheck updateCheck;
+	private StateMachine stateMachine;
 
 	public UpdateProcess(final Plugin plugin, final UpdateCheck updateCheck)
 	{
@@ -96,9 +96,9 @@ public class UpdateProcess implements Listener
 	{
 		UpdateProcess.this.currentPlayer = null;
 	}
-
+    //TODO: make sure this is threadsafe
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(final PlayerChatEvent event)
+	public void onPlayerChat(final AsyncPlayerChatEvent event)
 	{
 		if (event.getPlayer() == currentPlayer)
 		{
@@ -113,7 +113,6 @@ public class UpdateProcess implements Listener
 				startWork();
 			}
 			event.setCancelled(true);
-			return;
 		}
 	}
 

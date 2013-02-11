@@ -1,16 +1,16 @@
 package net.ess3.bukkit;
 
-import static net.ess3.I18n._;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static net.ess3.I18n._;
 import org.bukkit.plugin.PluginManager;
 
 
 public class VersionCheck
 {
-	public static final int BUKKIT_VERSION = 2015;
+	public static final int BUKKIT_VERSION = 2543;
 	private static final Pattern bukkitVersionPattern = Pattern.compile(
 			"git-Bukkit-(?:(?:[0-9]+)\\.)+[0-9]+-R[\\.0-9]+-(?:[0-9]+-g[0-9a-f]+-)?b([0-9]+)jnks.*");
 

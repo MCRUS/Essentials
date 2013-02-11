@@ -4,19 +4,19 @@ import java.io.*;
 import java.lang.ref.SoftReference;
 import java.util.*;
 import java.util.logging.Level;
-import org.bukkit.command.CommandSender;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IUser;
 import net.ess3.api.InvalidNameException;
 import net.ess3.utils.Util;
+import org.bukkit.command.CommandSender;
 
 
 public class TextInput implements IText
 {
-	private final transient List<String> lines;
-	private final transient List<String> chapters;
-	private final transient Map<String, Integer> bookmarks;
-	private final transient long lastChange;
+	private final List<String> lines;
+	private final List<String> chapters;
+	private final Map<String, Integer> bookmarks;
+	private final long lastChange;
 	private final static HashMap<String, SoftReference<TextInput>> cache = new HashMap<String, SoftReference<TextInput>>();
 
 	public TextInput(final CommandSender sender, final String filename, final boolean createFile, final IEssentials ess) throws IOException

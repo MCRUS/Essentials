@@ -1,49 +1,52 @@
 package net.ess3.user;
 
-import static net.ess3.I18n._;
 import java.lang.ref.WeakReference;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import lombok.Getter;
+import lombok.Setter;
+import net.ess3.Console;
+import static net.ess3.I18n._;
+import net.ess3.Teleport;
+import net.ess3.api.*;
+import net.ess3.craftbukkit.InventoryWorkaround;
+import net.ess3.economy.register.Method;
+import net.ess3.economy.register.Methods;
+import net.ess3.permissions.Permissions;
+import net.ess3.utils.DateUtil;
+import net.ess3.utils.FormatUtil;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import lombok.Getter;
-import lombok.Setter;
-import net.ess3.Console;
-import net.ess3.Teleport;
-import net.ess3.api.*;
-import net.ess3.craftbukkit.InventoryWorkaround;
-import net.ess3.economy.register.Method;
-import net.ess3.permissions.Permissions;
-import net.ess3.utils.DateUtil;
-import net.ess3.utils.FormatUtil;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 
 public class User extends UserBase implements IUser
 {
 	private CommandSender replyTo = null;
 	@Getter
-	private transient IUser teleportRequester;
+	private IUser teleportRequester;
 	@Getter
-	private transient boolean tpRequestHere;
+	private boolean tpRequestHere;
 	@Getter
-	private transient final ITeleport teleport;
+	private final ITeleport teleport;
 	@Getter
-	private transient long teleportRequestTime;
+	private long teleportRequestTime;
 	@Getter
 	@Setter
-	private transient long lastOnlineActivity;
-	private transient long lastActivity = System.currentTimeMillis();
+	private long lastOnlineActivity;
+	private long lastActivity = System.currentTimeMillis();
 	/*@Getter
 	 @Setter
 	 private boolean hidden = false;*/
 	@Getter
-	private transient boolean vanished;
+	private boolean vanished;
 	@Getter
 	@Setter
 	private boolean invSee = false;
@@ -51,7 +54,7 @@ public class User extends UserBase implements IUser
 	@Setter
 	private boolean enderSee = false;
 	private long lastThrottledAction;
-	private transient Location afkPosition;
+	private Location afkPosition;
 	private AtomicBoolean gotMailInfo = new AtomicBoolean(false);
 	private WeakReference<Player> playerCache;
 	@Getter
@@ -236,7 +239,7 @@ public class User extends UserBase implements IUser
 		}
 		catch (IllegalArgumentException e)
 		{
-			ess.getLogger().info("Playerlist for " + name + " was not updated. Use a shorter displayname prefix.");
+			ess.getLogger().info("Playerlist for " + name + " was not updated. Use a shorter displayname prefix."); //TODO: TL key?
 		}
 	}
 
@@ -247,9 +250,6 @@ public class User extends UserBase implements IUser
 
 		if (isOnline() && (changeDisplayname == true || (changeDisplayname == null && ess.getPlugin().isModuleEnabled("Chat"))))
 		{
-			;
-		}
-		{
 			setDisplayNick();
 		}
 	}
@@ -257,16 +257,16 @@ public class User extends UserBase implements IUser
 	@Override
 	public double getMoney()
 	{
-		if (ess.getPaymentMethod().hasMethod())
+		if (Methods.hasMethod())
 		{
 			try
 			{
-				final Method method = ess.getPaymentMethod().getMethod();
+				final Method method = Methods.getMethod();
 				if (!method.hasAccount(this.getName()))
 				{
 					throw new Exception();
 				}
-				final Method.MethodAccount account = ess.getPaymentMethod().getMethod().getAccount(this.getName());
+				final Method.MethodAccount account = Methods.getMethod().getAccount(this.getName());
 				return account.balance();
 			}
 			catch (Throwable ex)
@@ -279,16 +279,16 @@ public class User extends UserBase implements IUser
 	@Override
 	public void setMoney(final double value)
 	{
-		if (ess.getPaymentMethod().hasMethod())
+		if (Methods.hasMethod())
 		{
 			try
 			{
-				final Method method = ess.getPaymentMethod().getMethod();
+				final Method method = Methods.getMethod();
 				if (!method.hasAccount(this.getName()))
 				{
 					throw new Exception();
 				}
-				final Method.MethodAccount account = ess.getPaymentMethod().getMethod().getAccount(this.getName());
+				final Method.MethodAccount account = Methods.getMethod().getAccount(this.getName());
 				account.set(value);
 			}
 			catch (Throwable ex)
@@ -542,11 +542,11 @@ public class User extends UserBase implements IUser
 			final ISettings settings = ess.getSettings();
 			int oversizedStackSize = settings.getData().getGeneral().getOversizedStacksize();
 
-			overfilled = InventoryWorkaround.addItem(getPlayer().getInventory(), true, oversizedStackSize, itemStack);
+			overfilled = InventoryWorkaround.addOversizedItems(getPlayer().getInventory(), oversizedStackSize, itemStack);
 		}
 		else
 		{
-			overfilled = InventoryWorkaround.addItem(getPlayer().getInventory(), true, itemStack);
+			overfilled = InventoryWorkaround.addItems(getPlayer().getInventory(), itemStack);
 		}
 		if (canSpew)
 		{
@@ -593,7 +593,7 @@ public class User extends UserBase implements IUser
 		return true;
 	}
 
-	private transient long teleportInvulnerabilityTimestamp = 0;
+	private long teleportInvulnerabilityTimestamp = 0;
 
 	public void enableInvulnerabilityAfterTeleport()
 	{
@@ -635,6 +635,10 @@ public class User extends UserBase implements IUser
 				}
 			}
 			ess.getVanishedPlayers().add(getName());
+			if(Permissions.VANISH_EFFECT.isAuthorized(this))
+			{
+				getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false));
+			}
 		}
 		else
 		{
@@ -643,6 +647,10 @@ public class User extends UserBase implements IUser
 				p.showPlayer(getPlayer());
 			}
 			ess.getVanishedPlayers().remove(getName());
+			if(Permissions.VANISH_EFFECT.isAuthorized(this))
+			{
+				getPlayer().removePotionEffect(PotionEffectType.INVISIBILITY);
+			}
 		}
 	}
 

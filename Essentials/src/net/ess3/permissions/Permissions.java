@@ -1,10 +1,10 @@
 package net.ess3.permissions;
 
 import java.util.Locale;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
 import net.ess3.api.IPermission;
 import net.ess3.bukkit.PermissionFactory;
+import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 
 public enum Permissions implements IPermission
@@ -39,6 +39,7 @@ public enum Permissions implements IPermission
 	FEED_OTHERS,
 	FLY_EXEMPT,
 	FLY_OTHERS,
+	FLY_SAFELOGIN,
 	GAMEMODE_EXEMPT,
 	GAMEMODE_OTHERS,
 	GEOIP_HIDE(PermissionDefault.FALSE),
@@ -99,6 +100,7 @@ public enum Permissions implements IPermission
 	TELEPORT_TIMER_BYPASS,
 	TELEPORT_TIMER_MOVE,
 	TEMPBAN_EXEMPT,
+	TEMPBAN_UNLIMITED,
 	TEMPBAN_OFFLINE,
 	TIME_SET,
 	TOGGLEJAIL_OFFLINE,
@@ -112,6 +114,7 @@ public enum Permissions implements IPermission
 	WARP_LIST(PermissionDefault.TRUE),
 	WARP_HIDDEN,
 	WARP_OTHERS,
+	VANISH_EFFECT,
 	VANISH_EXEMPT,
 	VANISH_SEE_OTHERS,
 	VANISH_PVP,
@@ -119,7 +122,7 @@ public enum Permissions implements IPermission
 	private static final String base = "essentials.";
 	private final String permission;
 	private final PermissionDefault defaultPerm;
-	private transient String parent = null;
+	private String parent = null;
 
 	private Permissions()
 	{

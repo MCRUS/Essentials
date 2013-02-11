@@ -1,17 +1,17 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.util.Locale;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.EntityType;
+import static net.ess3.I18n._;
 import net.ess3.api.IUser;
 import net.ess3.bukkit.LivingEntities;
 import net.ess3.economy.Trade;
 import net.ess3.permissions.Permissions;
 import net.ess3.utils.LocationUtil;
 import net.ess3.utils.Util;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.EntityType;
 
 
 public class Commandspawner extends EssentialsCommand
@@ -45,9 +45,18 @@ public class Commandspawner extends EssentialsCommand
 			{
 				throw new Exception(_("unableToSpawnMob"));
 			}
+			int delay = 0;
+			if(args.length > 1 && Util.isInt(args[1]))
+			{
+				delay = Integer.parseInt(args[1]);
+			}
 			final Trade charge = new Trade("spawner-" + mob.getName().toLowerCase(Locale.ENGLISH), ess);
 			charge.isAffordableFor(user);
-			((CreatureSpawner)target.getBlock().getState()).setSpawnedType(mob);
+
+			CreatureSpawner spawner = ((CreatureSpawner)target.getBlock().getState());
+			spawner.setSpawnedType(mob);
+			spawner.setDelay(delay);
+
 			charge.charge(user);
 			user.sendMessage(_("setSpawner", mob.getName()));
 		}

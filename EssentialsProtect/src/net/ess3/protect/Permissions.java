@@ -1,11 +1,11 @@
 package net.ess3.protect;
 
 import java.util.Locale;
-import org.bukkit.command.CommandSender;
-import org.bukkit.permissions.PermissionDefault;
 import net.ess3.api.IPermission;
 import net.ess3.bukkit.PermissionFactory;
 import net.ess3.permissions.DotStarPermission;
+import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.PermissionDefault;
 
 
 public enum Permissions implements IPermission
@@ -29,7 +29,7 @@ public enum Permissions implements IPermission
 	private static final String base = "essentials.protect.";
 	private final String permission;
 	private final PermissionDefault defaultPerm;
-	private transient String parent = null;
+	private String parent = null;
 
 	private Permissions()
 	{

@@ -1,12 +1,12 @@
 package net.ess3.update.tasks;
 
-import org.bukkit.Bukkit;
 import net.ess3.update.AbstractWorkListener;
+import org.bukkit.Bukkit;
 
 
 public class SelfUpdate extends AbstractWorkListener implements Task, Runnable
 {
-	private final transient AbstractWorkListener listener;
+	private final AbstractWorkListener listener;
 
 	public SelfUpdate(final AbstractWorkListener listener)
 	{
@@ -44,7 +44,7 @@ public class SelfUpdate extends AbstractWorkListener implements Task, Runnable
 	@Override
 	public void run()
 	{
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(
+		Bukkit.getScheduler().runTaskAsynchronously( //Should this be async? (method deprecated)
 				getPlugin(), new Runnable()
 		{
 			@Override

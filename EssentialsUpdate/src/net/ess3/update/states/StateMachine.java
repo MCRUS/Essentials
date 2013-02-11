@@ -1,11 +1,11 @@
 package net.ess3.update.states;
 
 import java.util.Iterator;
+import net.ess3.update.AbstractWorkListener;
+import net.ess3.update.UpdateCheck;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import net.ess3.update.AbstractWorkListener;
-import net.ess3.update.UpdateCheck;
 
 
 public class StateMachine extends AbstractWorkListener implements Runnable
@@ -16,10 +16,10 @@ public class StateMachine extends AbstractWorkListener implements Runnable
 	}
 
 
-	private final transient StateMap states = new StateMap();
-	private transient AbstractState current;
-	private transient Player player;
-	private transient MachineResult result = MachineResult.NONE;
+	private final StateMap states = new StateMap();
+	private AbstractState current;
+	private Player player;
+	private MachineResult result = MachineResult.NONE;
 
 	public StateMachine(final Plugin plugin, final Player player, final UpdateCheck updateCheck)
 	{
@@ -85,12 +85,12 @@ public class StateMachine extends AbstractWorkListener implements Runnable
 		return result;
 	}
 
-	private transient Iterator<AbstractState> iterator;
+	private Iterator<AbstractState> iterator;
 
 	public void startWork()
 	{
 		iterator = states.values().iterator();
-		Bukkit.getScheduler().scheduleAsyncDelayedTask(getPlugin(), this);
+		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), this); //Should this be async? (method deprecated)
 	}
 
 	@Override
@@ -149,7 +149,7 @@ public class StateMachine extends AbstractWorkListener implements Runnable
 				{
 					StateMachine.this.player.sendMessage(message);
 				}
-				Bukkit.getScheduler().scheduleAsyncDelayedTask(getPlugin(), StateMachine.this);
+				Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), StateMachine.this); //Should this be async? (method deprecated)
 			}
 		});
 	}

@@ -2,6 +2,13 @@ package net.ess3.signs.listeners;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.ess3.api.IEssentials;
+import net.ess3.api.IUser;
+import net.ess3.permissions.Permissions;
+import net.ess3.signs.EssentialsSign;
+import net.ess3.signs.ISignsPlugin;
+import net.ess3.signs.Signs;
+import net.ess3.utils.FormatUtil;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -10,20 +17,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import net.ess3.api.IEssentials;
-import net.ess3.api.ISettings;
-import net.ess3.api.IUser;
-import net.ess3.permissions.Permissions;
-import net.ess3.signs.EssentialsSign;
-import net.ess3.signs.ISignsPlugin;
-import net.ess3.signs.Signs;
-import net.ess3.utils.FormatUtil;
 
 
 public class SignBlockListener implements Listener
 {
-	private final transient IEssentials ess;
-	private final transient ISignsPlugin plugin;
+	private final IEssentials ess;
+	private final ISignsPlugin plugin;
 	private final static Logger LOGGER = Logger.getLogger("Minecraft");
 	private final static int WALL_SIGN = Material.WALL_SIGN.getId();
 	private final static int SIGN_POST = Material.SIGN_POST.getId();
@@ -37,7 +36,6 @@ public class SignBlockListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(final BlockBreakEvent event)
 	{
-		ISettings settings = ess.getSettings();
 		if (plugin.getSettings().areSignsDisabled())
 		{
 			return;
@@ -51,6 +49,13 @@ public class SignBlockListener implements Listener
 
 	public boolean protectSignsAndBlocks(final Block block, final Player player)
 	{
+		// prevent any signs be broken by destroying the block they are attached to
+		if (EssentialsSign.checkIfBlockBreaksSigns(block))
+		{
+			LOGGER.log(Level.INFO, "Prevented that a block was broken next to a sign.");
+			return true;
+		}
+
 		final int mat = block.getTypeId();
 		if (mat == SIGN_POST || mat == WALL_SIGN)
 		{
@@ -63,12 +68,6 @@ public class SignBlockListener implements Listener
 					return true;
 				}
 			}
-		}
-		// prevent any signs be broken by destroying the block they are attached to
-		if (EssentialsSign.checkIfBlockBreaksSigns(block))
-		{
-			LOGGER.log(Level.INFO, "Prevented that a block was broken next to a sign.");
-			return true;
 		}
 		for (EssentialsSign sign : plugin.getSettings().getEnabledSigns())
 		{

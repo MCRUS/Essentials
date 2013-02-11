@@ -2,14 +2,14 @@ package net.ess3.signs;
 
 import java.io.File;
 import java.util.*;
-import org.bukkit.plugin.Plugin;
 import net.ess3.api.IEssentials;
 import net.ess3.storage.AsyncStorageObjectHolder;
+import org.bukkit.plugin.Plugin;
 
 
 public class SignsConfigHolder extends AsyncStorageObjectHolder<SignConfig>
 {
-	private final transient Plugin plugin;
+	private final Plugin plugin;
 	private Set<EssentialsSign> enabledSigns = new HashSet<EssentialsSign>();
 	private boolean signsEnabled = false;
 

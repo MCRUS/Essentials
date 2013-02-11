@@ -1,6 +1,7 @@
 package net.ess3.signs.signs;
 
 import java.util.Locale;
+import static net.ess3.I18n._;
 import net.ess3.api.ChargeException;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IUser;
@@ -60,7 +61,6 @@ public class SignKit extends EssentialsSign
 			charge.isAffordableFor(player);
 			try
 			{
-				;
 				final Kit kit = ess.getKits().getKit(kitName);
 				ess.getKits().checkTime(player, kit);
 				ess.getKits().sendKit(player, kit);
@@ -72,6 +72,9 @@ public class SignKit extends EssentialsSign
 			}
 			return true;
 		}
-		return false;
+		else
+		{
+			throw new SignException(_("noKitPermission", "essentials.kits." + kitName));
+		}
 	}
 }

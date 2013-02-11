@@ -1,11 +1,12 @@
 package net.ess3.commands;
 
 import static net.ess3.I18n._;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import net.ess3.api.ChargeException;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
 import net.ess3.economy.Trade;
 import net.ess3.permissions.Permissions;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 
 public class Commandtpaccept extends EssentialsCommand
@@ -41,24 +42,24 @@ public class Commandtpaccept extends EssentialsCommand
 		}
 
 		final Trade charge = new Trade(commandName, ess);
-		if (user.isTpRequestHere())
-		{
-			charge.isAffordableFor(user);
-		}
-		else
-		{
-			charge.isAffordableFor(target);
-		}
 		user.sendMessage(_("requestAccepted"));
 		target.sendMessage(_("requestAcceptedFrom", user.getPlayer().getDisplayName()));
 
-		if (user.isTpRequestHere())
+		try
 		{
-			target.getTeleport().teleportToMe(user, charge, TeleportCause.COMMAND);
+			if (user.isTpRequestHere())
+			{
+				target.getTeleport().teleportToMe(user, charge, TeleportCause.COMMAND);
+			}
+			else
+			{
+				target.getTeleport().teleport(user.getPlayer(), charge, TeleportCause.COMMAND);
+			}
 		}
-		else
+		catch (ChargeException ex)
 		{
-			target.getTeleport().teleport(user.getPlayer(), charge, TeleportCause.COMMAND);
+			user.sendMessage(_("pendingTeleportCancelled"));
+			//ess.showError(target, ex, commandLabel); TODO: equivalent to ess.showError() could not be found?
 		}
 		user.requestTeleport(null, false);
 		throw new NoChargeException();

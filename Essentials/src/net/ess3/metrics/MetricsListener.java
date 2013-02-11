@@ -1,21 +1,21 @@
 package net.ess3.metrics;
 
-import static net.ess3.I18n._;
 import java.util.logging.Level;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
+import static net.ess3.I18n._;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 
 public class MetricsListener implements Listener
 {
-	private final transient IEssentials ess;
-	private final transient MetricsStarter starter;
+	private final IEssentials ess;
+	private final MetricsStarter starter;
 
 	public MetricsListener(final IEssentials parent, final MetricsStarter starter)
 	{
@@ -37,7 +37,7 @@ public class MetricsListener implements Listener
 			ess.getLogger().log(Level.INFO, _("metrics3"));
 			settings.getData().getGeneral().setMetricsEnabled(true);
 			settings.queueSave();
-			ess.getPlugin().scheduleAsyncDelayedTask(starter, 5 * 1200);
+			ess.getPlugin().runTaskLaterAsynchronously(starter, 5 * 1200);
 		}
 	}
 }

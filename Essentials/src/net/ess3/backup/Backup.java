@@ -1,25 +1,25 @@
 package net.ess3.backup;
 
-import static net.ess3.I18n._;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
+import static net.ess3.I18n._;
 import net.ess3.api.IBackup;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
+import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
 
 
 public class Backup implements Runnable, IBackup
 {
-	private transient final Server server;
-	private transient final IEssentials ess;
-	private transient final AtomicBoolean running = new AtomicBoolean(false);
-	private transient int taskId = -1;
-	private transient final AtomicBoolean active = new AtomicBoolean(false);
+	private final Server server;
+	private final IEssentials ess;
+	private final AtomicBoolean running = new AtomicBoolean(false);
+	private int taskId = -1;
+	private final AtomicBoolean active = new AtomicBoolean(false);
 
 	public Backup(final IEssentials ess)
 	{
@@ -76,13 +76,13 @@ public class Backup implements Runnable, IBackup
 			}
 		}
 
-		ess.getPlugin().scheduleAsyncDelayedTask(new BackupRunner(backupCommand));
+		ess.getPlugin().runTaskAsynchronously(new BackupRunner(backupCommand));
 	}
 
 
 	private class BackupRunner implements Runnable
 	{
-		private final transient String command;
+		private final String command;
 
 		public BackupRunner(final String command)
 		{

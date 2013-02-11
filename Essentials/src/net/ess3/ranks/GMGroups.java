@@ -1,19 +1,19 @@
 package net.ess3.ranks;
 
 import java.util.logging.Level;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IRanks;
 import net.ess3.api.ISettings;
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.Plugin;
 
 
 public class GMGroups extends AbstractRanks implements IRanks
 {
-	private final transient IEssentials ess;
-	private final transient GroupManager groupManager;
+	private final IEssentials ess;
+	private final GroupManager groupManager;
 
 	public GMGroups(final IEssentials ess, final Plugin groupManager)
 	{

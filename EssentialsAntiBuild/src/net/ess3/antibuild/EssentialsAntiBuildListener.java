@@ -6,6 +6,7 @@ import net.ess3.api.IUser;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,8 +26,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class EssentialsAntiBuildListener implements Listener
 {
-	final private transient IAntiBuild antib;
-	final private transient IEssentials ess;
+	final private IAntiBuild antib;
+	final private IEssentials ess;
 
 	public EssentialsAntiBuildListener(final IAntiBuild parent)
 	{
@@ -39,7 +40,7 @@ public class EssentialsAntiBuildListener implements Listener
 	{
 		final Player user = event.getPlayer();
 		final Block block = event.getBlockPlaced();
-		//final int typeId = block.getTypeId(); unused?
+		final int typeId = block.getTypeId(); //TODO: unused?
 		final Material type = block.getType();
 
 		if (antib.getSettings().getData().isDisableBuild() && !Permissions.BUILD.isAuthorized(user) && !Permissions.PLACEMENT.isAuthorized(user, block))
@@ -73,7 +74,7 @@ public class EssentialsAntiBuildListener implements Listener
 	{
 		final Player user = event.getPlayer();
 		final Block block = event.getBlock();
-		//final int typeId = block.getTypeId(); unused?
+		final int typeId = block.getTypeId(); //TODO: unused?
 		final Material type = block.getType();
 
 		if (antib.getSettings().getData().isDisableBuild() && !Permissions.BUILD.isAuthorized(user) && !Permissions.BREAK.isAuthorized(user, block))
@@ -105,18 +106,31 @@ public class EssentialsAntiBuildListener implements Listener
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onHangingBreak(final HangingBreakByEntityEvent event)
 	{
+		//TODO: This code is not currently working, needs testing when ess3 is more stable.
 		final Entity entity = event.getRemover();
 		if (entity instanceof Player)
 		{
+			final Boolean warn = antib.getSettings().getData().isWarnOnBuildDisallow();
+			final EntityType type = event.getEntity().getType();
 			final IUser user = ess.getUserMap().getUser((Player)entity);
-			if (antib.getSettings().getData().isDisableBuild() && !Permissions.BUILD.isAuthorized(user) && !Permissions.BREAK.isAuthorized(
-					user, Material.PAINTING, null))
+			if (antib.getSettings().getData().isDisableBuild() && !Permissions.BUILD.isAuthorized(user))
 			{
-				if (antib.getSettings().getData().isWarnOnBuildDisallow())
+				if (type == EntityType.PAINTING && !Permissions.BREAK.isAuthorized(user, Material.PAINTING, null))
 				{
-					user.sendMessage(_("antiBuildBreak", Material.PAINTING.toString()));
+					if (warn)
+					{
+						user.sendMessage(_("antiBuildBreak", Material.PAINTING.toString()));
+					}
+					event.setCancelled(true);
 				}
-				event.setCancelled(true);
+				else if (type == EntityType.ITEM_FRAME && !Permissions.BREAK.isAuthorized(user, Material.ITEM_FRAME, null))
+				{
+					if (warn)
+					{
+						user.sendMessage(_("antiBuildBreak", Material.ITEM_FRAME.toString()));
+					}
+					event.setCancelled(true);
+				}
 			}
 		}
 	}

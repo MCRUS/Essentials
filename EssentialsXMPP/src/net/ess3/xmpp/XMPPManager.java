@@ -2,15 +2,12 @@ package net.ess3.xmpp;
 
 import java.io.File;
 import java.util.*;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
+import java.util.logging.*;
 import net.ess3.api.IReload;
 import net.ess3.api.IUser;
 import net.ess3.utils.FormatUtil;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.packet.Message;
@@ -21,17 +18,18 @@ import org.jivesoftware.smack.util.StringUtils;
 public final class XMPPManager extends Handler implements MessageListener, ChatManagerListener, IReload
 {
 	private static final Logger LOGGER = Logger.getLogger("Minecraft");
-	private transient YamlConfiguration config = null;
-	private transient XMPPConnection connection;
-	private transient ChatManager chatManager;
-	private final transient Map<String, Chat> chats = Collections.synchronizedMap(new HashMap<String, Chat>());
-	private final transient Set<LogRecord> logrecords = Collections.synchronizedSet(new HashSet<LogRecord>());
-	private final transient IEssentialsXMPP parent;
-	private transient List<String> logUsers;
-	private transient Level logLevel;
-	private transient boolean ignoreLagMessages = true;
-	private transient Thread loggerThread;
-	private transient boolean threadrunning = true;
+	private static final SimpleFormatter formatter = new SimpleFormatter();
+	private YamlConfiguration config = null;
+	private XMPPConnection connection;
+	private ChatManager chatManager;
+	private final Map<String, Chat> chats = Collections.synchronizedMap(new HashMap<String, Chat>());
+	private final Set<LogRecord> logrecords = Collections.synchronizedSet(new HashSet<LogRecord>());
+	private final IEssentialsXMPP parent;
+	private List<String> logUsers;
+	private Level logLevel;
+	private boolean ignoreLagMessages = true;
+	private Thread loggerThread;
+	private boolean threadrunning = true;
 
 	public XMPPManager(final IEssentialsXMPP parent)
 	{
@@ -261,8 +259,7 @@ public final class XMPPManager extends Handler implements MessageListener, ChatM
 										XMPPManager.this.startChat(user);
 										for (LogRecord logRecord : copy)
 										{
-											final String message = String.format(
-													"[" + logRecord.getLevel().getLocalizedName() + "] " + logRecord.getMessage(), logRecord.getParameters());
+											final String message = formatter.format(logRecord);
 											if (!XMPPManager.this.sendMessage(user, message))
 											{
 												failedUsers.add(user);

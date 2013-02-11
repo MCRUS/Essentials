@@ -1,28 +1,28 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static net.ess3.I18n._;
+import net.ess3.api.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import net.ess3.api.*;
 
 
 public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 {
-	private final transient ClassLoader classLoader;
-	private final transient String commandPath;
-	private final transient String permissionPrefix;// TODO: Needed?
-	private final transient IEssentialsModule module;
-	private static final transient Logger LOGGER = Bukkit.getLogger();
-	private final transient Map<String, List<PluginCommand>> altcommands = new HashMap<String, List<PluginCommand>>();
-	private final transient Map<String, String> disabledList = new HashMap<String, String>();
-	private final transient Map<String, IEssentialsCommand> commands = new HashMap<String, IEssentialsCommand>();
-	private final transient IEssentials ess;
+	private final ClassLoader classLoader;
+	private final String commandPath;
+	private final String permissionPrefix;// TODO: Needed?
+	private final IEssentialsModule module;
+	private static final Logger LOGGER = Bukkit.getLogger();
+	private final Map<String, List<PluginCommand>> altcommands = new HashMap<String, List<PluginCommand>>();
+	private final Map<String, String> disabledList = new HashMap<String, String>();
+	private final Map<String, IEssentialsCommand> commands = new HashMap<String, IEssentialsCommand>();
+	private final IEssentials ess;
 
 	public EssentialsCommandHandler(ClassLoader classLoader, String commandPath, String permissionPrefix, IEssentials ess)
 	{
@@ -61,7 +61,7 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 			if (pc != null)
 			{
 
-				executed(commandLabel, pc.getLabel());
+				executed(commandLabel, pc);
 				try
 				{
 					return pc.execute(sender, commandLabel, args);
@@ -193,7 +193,7 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 			if (pc != null)
 			{
 
-				executed(commandLabel, pc.getLabel());
+				executed(commandLabel, pc);
 				try
 				{
 					return pc.tabComplete(sender, commandLabel, args);
@@ -404,13 +404,14 @@ public class EssentialsCommandHandler implements ICommandHandler, TabExecutor
 		return pcommands.get(0);
 	}
 
-	public void executed(final String label, final String otherLabel)
+	public void executed(final String label, final PluginCommand pc)
 	{
+		final String altString = pc.getPlugin().getName() + ":" + pc.getLabel();
 		if (ess.getSettings().isDebug())
 		{
-			LOGGER.log(Level.INFO, "Essentials: Alternative command " + label + " found, using " + otherLabel);
+			LOGGER.log(Level.INFO, "Essentials: Alternative command " + label + " found, using " + altString); //TODO: TL key?
 		}
-		disabledList.put(label, otherLabel);
+		disabledList.put(label, altString);
 	}
 
 	@Override

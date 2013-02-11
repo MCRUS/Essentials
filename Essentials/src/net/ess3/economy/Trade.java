@@ -1,6 +1,5 @@
 package net.ess3.economy;
 
-import static net.ess3.I18n._;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,24 +9,25 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
+import static net.ess3.I18n._;
 import net.ess3.api.ChargeException;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
 import net.ess3.api.IUser;
 import net.ess3.craftbukkit.InventoryWorkaround;
 import net.ess3.permissions.Permissions;
+import org.bukkit.Location;
+import org.bukkit.inventory.ItemStack;
 
 
 public class Trade
 {
-	private final transient String command;
-	private final transient String fallbackCommand;
-	private final transient Double money;
-	private final transient ItemStack itemStack;
-	private final transient Integer exp;
-	private final transient IEssentials ess;
+	private final String command;
+	private final String fallbackCommand;
+	private final Double money;
+	private final ItemStack itemStack;
+	private final Integer exp;
+	private final IEssentials ess;
 
 	public Trade(final String command, final IEssentials ess)
 	{
@@ -71,7 +71,7 @@ public class Trade
 			throw new ChargeException(_("notEnoughMoney"));
 		}
 
-		if (getItemStack() != null && InventoryWorkaround.containsItem(user.getPlayer().getInventory(), true, true, itemStack))
+		if (getItemStack() != null && !user.getPlayer().getInventory().containsAtLeast(itemStack, itemStack.getAmount()))
 		{
 			throw new ChargeException(
 					_("missingItems", getItemStack().getAmount(), getItemStack().getType().toString().toLowerCase(Locale.ENGLISH).replace("_", " ")));
@@ -105,7 +105,7 @@ public class Trade
 		{
 			if (dropItems)
 			{
-				final Map<Integer, ItemStack> leftOver = InventoryWorkaround.addItem(user.getPlayer().getInventory(), true, getItemStack());
+				final Map<Integer, ItemStack> leftOver = InventoryWorkaround.addItems(user.getPlayer().getInventory(), getItemStack());
 				final Location loc = user.getPlayer().getLocation();
 				for (ItemStack dropStack : leftOver.values())
 				{
@@ -129,7 +129,7 @@ public class Trade
 			}
 			else
 			{
-				success = InventoryWorkaround.addAllItems(user.getPlayer().getInventory(), true, getItemStack());
+				success = InventoryWorkaround.addAllItems(user.getPlayer().getInventory(), getItemStack());
 			}
 			user.getPlayer().updateInventory();
 		}
@@ -152,12 +152,12 @@ public class Trade
 		}
 		if (getItemStack() != null)
 		{
-			if (!InventoryWorkaround.containsItem(user.getPlayer().getInventory(), true, true, itemStack))
+			if (!user.getPlayer().getInventory().containsAtLeast(itemStack, itemStack.getAmount()))
 			{
 				throw new ChargeException(
 						_("missingItems", getItemStack().getAmount(), getItemStack().getType().toString().toLowerCase(Locale.ENGLISH).replace("_", " ")));
 			}
-			InventoryWorkaround.removeItem(user.getPlayer().getInventory(), true, true, getItemStack());
+			user.getPlayer().getInventory().removeItem(getItemStack());
 			user.getPlayer().updateInventory();
 		}
 		if (command != null && !command.isEmpty() && !Permissions.NOCOMMANDCOST.isAuthorized(user, command))

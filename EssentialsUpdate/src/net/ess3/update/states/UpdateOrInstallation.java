@@ -1,13 +1,13 @@
 package net.ess3.update.states;
 
-import org.bukkit.entity.Player;
 import net.ess3.update.UpdateCheck;
+import org.bukkit.entity.Player;
 
 
 public class UpdateOrInstallation extends AbstractState
 {
-	private final transient UpdateCheck updateCheck;
-	private transient boolean update = false;
+	private final UpdateCheck updateCheck;
+	private boolean update = false;
 
 	public UpdateOrInstallation(final StateMap stateMap, final UpdateCheck updateCheck)
 	{

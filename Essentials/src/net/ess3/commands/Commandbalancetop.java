@@ -1,17 +1,17 @@
 package net.ess3.commands;
 
-import static net.ess3.I18n._;
 import java.text.DateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import org.bukkit.command.CommandSender;
+import static net.ess3.I18n._;
 import net.ess3.api.IUser;
 import net.ess3.permissions.Permissions;
 import net.ess3.user.UserData;
 import net.ess3.utils.FormatUtil;
 import net.ess3.utils.textreader.ArrayListInput;
 import net.ess3.utils.textreader.TextPager;
+import org.bukkit.command.CommandSender;
 
 
 public class Commandbalancetop extends EssentialsCommand
@@ -84,7 +84,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				lock.readLock().unlock();
 			}
-			ess.getPlugin().scheduleAsyncDelayedTask(new Viewer(sender, page, force));
+			ess.getPlugin().runTaskAsynchronously(new Viewer(sender, page, force));
 		}
 		else
 		{
@@ -92,7 +92,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				sender.sendMessage(_("orderBalances", ess.getUserMap().getUniqueUsers()));
 			}
-			ess.getPlugin().scheduleAsyncDelayedTask(new Viewer(sender, page, force));
+			ess.getPlugin().runTaskAsynchronously(new Viewer(sender, page, force));
 		}
 
 	}
@@ -109,7 +109,7 @@ public class Commandbalancetop extends EssentialsCommand
 
 	private class Calculator implements Runnable
 	{
-		private final transient Viewer viewer;
+		private final Viewer viewer;
 		private final boolean force;
 
 		public Calculator(final Viewer viewer, final boolean force)
@@ -169,16 +169,16 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				lock.writeLock().unlock();
 			}
-			ess.getPlugin().scheduleAsyncDelayedTask(viewer);
+			ess.getPlugin().runTaskAsynchronously(viewer);
 		}
 	}
 
 
 	private class Viewer implements Runnable
 	{
-		private final transient CommandSender sender;
-		private final transient int page;
-		private final transient boolean force;
+		private final CommandSender sender;
+		private final int page;
+		private final boolean force;
 
 		public Viewer(final CommandSender sender, final int page, final boolean force)
 		{
@@ -203,7 +203,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				lock.readLock().unlock();
 			}
-			ess.getPlugin().scheduleAsyncDelayedTask(new Calculator(new Viewer(sender, page, force), force));
+			ess.getPlugin().runTaskAsynchronously(new Calculator(new Viewer(sender, page, force), force));
 		}
 	}
 }

@@ -1,18 +1,18 @@
 package net.ess3.update.states;
 
 import java.util.List;
-import org.bukkit.entity.Player;
 import net.ess3.update.UpdateCheck;
 import net.ess3.update.VersionInfo;
+import org.bukkit.entity.Player;
 
 
 public class Changelog extends AbstractState
 {
 	private static final int CHANGES_PER_PAGE = 5;
-	private transient int page = 0;
-	private transient boolean confirmed = false;
-	private transient final List<String> changes;
-	private transient final int pages;
+	private int page = 0;
+	private boolean confirmed = false;
+	private final List<String> changes;
+	private final int pages;
 
 	public Changelog(final StateMap stateMap)
 	{

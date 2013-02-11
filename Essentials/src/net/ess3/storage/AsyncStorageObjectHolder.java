@@ -4,20 +4,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import net.ess3.api.IEssentials;
+import org.bukkit.Bukkit;
 
 
 public abstract class AsyncStorageObjectHolder<T extends StorageObject> implements IStorageObjectHolder<T>
 {
-	private transient T data;
-	private final transient Class<T> clazz;
-	protected final transient IEssentials ess;
-	private final transient StorageObjectDataWriter writer;
-	private final transient StorageObjectDataReader reader;
-	private final transient AtomicBoolean loaded = new AtomicBoolean(false);
+	private T data;
+	private final Class<T> clazz;
+	protected final IEssentials ess;
+	private final StorageObjectDataWriter writer;
+	private final StorageObjectDataReader reader;
+	private final AtomicBoolean loaded = new AtomicBoolean(false);
 	private volatile long savetime = 0;
-	private final transient File file;
+	private final File file;
 
 	public AsyncStorageObjectHolder(final IEssentials ess, final Class<T> clazz, final File file)
 	{

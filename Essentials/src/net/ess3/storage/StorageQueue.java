@@ -15,7 +15,7 @@ public class StorageQueue implements Runnable
 	private DelayQueue<WriteRequest> queue = new DelayQueue<WriteRequest>();
 	public final static long DELAY = TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS);
 	private final AtomicBoolean enabled = new AtomicBoolean(false);
-	private final transient Object lock = new Object();
+	private final Object lock = new Object();
 	private final IPlugin plugin;
 
 	public StorageQueue(IPlugin plugin)
@@ -44,7 +44,7 @@ public class StorageQueue implements Runnable
 						}
 						else if (state == RequestState.SCHEDULE)
 						{
-							plugin.scheduleAsyncDelayedTask(request.getRunnable());
+							plugin.runTaskAsynchronously(request.getRunnable());
 						}
 					}
 					requests.clear();
@@ -74,7 +74,7 @@ public class StorageQueue implements Runnable
 	{
 		synchronized (lock)
 		{
-			plugin.scheduleAsyncDelayedTask(this);
+			plugin.runTaskAsynchronously(this);
 		}
 	}
 
