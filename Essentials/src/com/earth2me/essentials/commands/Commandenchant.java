@@ -2,6 +2,7 @@ package com.earth2me.essentials.commands;
 
 import com.earth2me.essentials.Enchantments;
 import static com.earth2me.essentials.I18n._;
+import com.earth2me.essentials.MetaItemStack;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.Util;
 import java.util.Locale;
@@ -35,7 +36,7 @@ public class Commandenchant extends EssentialsCommand
 			for (Map.Entry<String, Enchantment> entry : Enchantments.entrySet())
 			{
 				final String enchantmentName = entry.getValue().getName().toLowerCase(Locale.ENGLISH);
-				if (enchantmentslist.contains(enchantmentName) || user.isAuthorized("essentials.enchant." + enchantmentName))
+				if (enchantmentslist.contains(enchantmentName) || (user.isAuthorized("essentials.enchant." + enchantmentName) && entry.getValue().canEnchantItem(stack)))
 				{
 					enchantmentslist.add(entry.getKey());
 					//enchantmentslist.add(enchantmentName);
@@ -43,6 +44,7 @@ public class Commandenchant extends EssentialsCommand
 			}
 			throw new NotEnoughArgumentsException(_("enchantments", Util.joinList(enchantmentslist.toArray())));
 		}
+
 		int level = -1;
 		if (args.length > 1)
 		{
@@ -55,20 +57,14 @@ public class Commandenchant extends EssentialsCommand
 				level = -1;
 			}
 		}
-		final Enchantment enchantment = getEnchantment(args[0], user);
-		if (level < 0 || level > enchantment.getMaxLevel())
-		{
-			level = enchantment.getMaxLevel();
-		}
-		if (level == 0)
-		{
-			stack.removeEnchantment(enchantment);
-		}
-		else
-		{
-			stack.addEnchantment(enchantment, level);
-		}
-		user.getInventory().setItemInHand(stack);
+
+		final boolean allowUnsafe = ess.getSettings().allowUnsafeEnchantments() && user.isAuthorized("essentials.enchant.allowunsafe");
+		
+		final MetaItemStack metaStack = new MetaItemStack(stack);
+		final Enchantment enchantment = metaStack.getEnchantment(user, args[0]);
+		metaStack.addEnchantment(user, allowUnsafe, enchantment, level);
+		user.getInventory().setItemInHand(metaStack.getItemStack());
+		
 		user.updateInventory();
 		final String enchantmentName = enchantment.getName().toLowerCase(Locale.ENGLISH);
 		if (level == 0)
@@ -79,21 +75,5 @@ public class Commandenchant extends EssentialsCommand
 		{
 			user.sendMessage(_("enchantmentApplied", enchantmentName.replace('_', ' ')));
 		}
-	}
-
-	public static Enchantment getEnchantment(final String name, final User user) throws Exception
-	{
-
-		final Enchantment enchantment = Enchantments.getByName(name);
-		if (enchantment == null)
-		{
-			throw new Exception(_("enchantmentNotFound"));
-		}
-		final String enchantmentName = enchantment.getName().toLowerCase(Locale.ENGLISH);
-		if (user != null && !user.isAuthorized("essentials.enchant." + enchantmentName))
-		{
-			throw new Exception(_("enchantmentPerm", enchantmentName));
-		}
-		return enchantment;
 	}
 }

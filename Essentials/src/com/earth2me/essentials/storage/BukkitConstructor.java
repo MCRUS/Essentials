@@ -1,10 +1,10 @@
 package com.earth2me.essentials.storage;
 
+import com.earth2me.essentials.Util;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +23,6 @@ import org.yaml.snakeyaml.nodes.*;
 
 public class BukkitConstructor extends CustomClassLoaderConstructor
 {
-	private final transient Pattern NUMPATTERN = Pattern.compile("\\d+");
 	private final transient Plugin plugin;
 
 	public BukkitConstructor(final Class clazz, final Plugin plugin)
@@ -44,7 +43,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 			{
 				final String val = (String)constructScalar((ScalarNode)node);
 				Material mat;
-				if (NUMPATTERN.matcher(val).matches())
+				if (Util.isInt(val))
 				{
 					final int typeId = Integer.parseInt(val);
 					mat = Material.getMaterial(typeId);
@@ -68,7 +67,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 					return null;
 				}
 				Material mat;
-				if (NUMPATTERN.matcher(split[0]).matches())
+				if (Util.isInt(split[0]))
 				{
 					final int typeId = Integer.parseInt(split[0]);
 					mat = Material.getMaterial(typeId);
@@ -82,7 +81,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 					return null;
 				}
 				byte data = 0;
-				if (split.length == 2 && NUMPATTERN.matcher(split[1]).matches())
+				if (split.length == 2 && Util.isInt(split[1]))
 				{
 					data = Byte.parseByte(split[1]);
 				}
@@ -106,7 +105,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 					return null;
 				}
 				Material mat;
-				if (NUMPATTERN.matcher(split2[0]).matches())
+				if (Util.isInt(split2[0]))
 				{
 					final int typeId = Integer.parseInt(split2[0]);
 					mat = Material.getMaterial(typeId);
@@ -120,12 +119,12 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 					return null;
 				}
 				short data = 0;
-				if (split2.length == 2 && NUMPATTERN.matcher(split2[1]).matches())
+				if (split2.length == 2 && Util.isInt(split2[1]))
 				{
 					data = Short.parseShort(split2[1]);
 				}
 				int size = mat.getMaxStackSize();
-				if (split1.length > 1 && NUMPATTERN.matcher(split1[1]).matches())
+				if (split1.length > 1 && Util.isInt(split1[1]))
 				{
 					size = Integer.parseInt(split1[1]);
 				}
@@ -140,7 +139,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 							continue;
 						}
 						Enchantment enchantment;
-						if (NUMPATTERN.matcher(split3[0]).matches())
+						if (Util.isInt(split3[0]))
 						{
 							final int enchantId = Integer.parseInt(split3[0]);
 							enchantment = Enchantment.getById(enchantId);
@@ -154,7 +153,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 							continue;
 						}
 						int level = enchantment.getStartLevel();
-						if (split3.length == 2 && NUMPATTERN.matcher(split3[1]).matches())
+						if (split3.length == 2 && Util.isInt(split3[1]))
 						{
 							level = Integer.parseInt(split3[1]);
 						}
@@ -184,7 +183,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 					return null;
 				}
 				Enchantment enchant;
-				if (NUMPATTERN.matcher(split[0]).matches())
+				if (Util.isInt(split[0]))
 				{
 					final int typeId = Integer.parseInt(split[0]);
 					enchant = Enchantment.getById(typeId);
@@ -198,7 +197,7 @@ public class BukkitConstructor extends CustomClassLoaderConstructor
 					return null;
 				}
 				int level = enchant.getStartLevel();
-				if (split.length == 2 && NUMPATTERN.matcher(split[1]).matches())
+				if (split.length == 2 && Util.isInt(split[1]))
 				{
 					level = Integer.parseInt(split[1]);
 				}

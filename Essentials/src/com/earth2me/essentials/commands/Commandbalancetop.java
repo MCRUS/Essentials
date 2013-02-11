@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 
-
+//TODO: Remove op and replace with perm
 public class Commandbalancetop extends EssentialsCommand
 {
 	public Commandbalancetop()
@@ -63,7 +63,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				lock.readLock().unlock();
 			}
-			ess.scheduleAsyncDelayedTask(new Viewer(sender, page, force));
+			ess.runTaskAsynchronously(new Viewer(sender, page, force));
 		}
 		else
 		{
@@ -71,7 +71,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				sender.sendMessage(_("orderBalances", ess.getUserMap().getUniqueUsers()));
 			}
-			ess.scheduleAsyncDelayedTask(new Viewer(sender, page, force));
+			ess.runTaskAsynchronously(new Viewer(sender, page, force));
 		}
 
 	}
@@ -82,7 +82,7 @@ public class Commandbalancetop extends EssentialsCommand
 		cal.setTimeInMillis(cacheage);
 		final DateFormat format = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT);
 		sender.sendMessage(_("balanceTop", format.format(cal.getTime())));
-		new TextPager(cache).showPage(Integer.toString(page), "", "balancetop", sender);
+		new TextPager(cache).showPage(Integer.toString(page), null, "balancetop", sender);
 	}
 
 
@@ -144,7 +144,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				lock.writeLock().unlock();
 			}
-			ess.scheduleAsyncDelayedTask(viewer);
+			ess.runTaskAsynchronously(viewer);
 		}
 	}
 
@@ -178,7 +178,7 @@ public class Commandbalancetop extends EssentialsCommand
 			{
 				lock.readLock().unlock();
 			}
-			ess.scheduleAsyncDelayedTask(new Calculator(new Viewer(sender, page, force), force));
+			ess.runTaskAsynchronously(new Calculator(new Viewer(sender, page, force), force));
 		}
 	}
 }

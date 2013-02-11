@@ -2,7 +2,7 @@ package com.earth2me.essentials.commands;
 
 import static com.earth2me.essentials.I18n._;
 import com.earth2me.essentials.Mob;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Locale;
 import org.bukkit.Chunk;
 import org.bukkit.Server;
@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
 
 
 public class Commandkillall extends EssentialsCommand
@@ -109,7 +110,7 @@ public class Commandkillall extends EssentialsCommand
 						continue;
 					}
 				}
-				if(entity instanceof Ocelot)
+				if (entity instanceof Ocelot)
 				{
 					if (((Ocelot)entity).isTamed())
 					{
@@ -120,7 +121,7 @@ public class Commandkillall extends EssentialsCommand
 				{
 					if (entity instanceof Animals || entity instanceof NPC || entity instanceof Snowman || entity instanceof WaterMob)
 					{
-						EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, Collections.EMPTY_LIST);
+						EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, new ArrayList<ItemStack>(0));
 						ess.getServer().getPluginManager().callEvent(event);
 						entity.remove();
 						numKills++;
@@ -130,7 +131,7 @@ public class Commandkillall extends EssentialsCommand
 				{
 					if (entity instanceof Monster || entity instanceof ComplexLivingEntity || entity instanceof Flying || entity instanceof Slime)
 					{
-						EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, Collections.EMPTY_LIST);
+						EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, new ArrayList<ItemStack>(0));
 						ess.getServer().getPluginManager().callEvent(event);
 						entity.remove();
 						numKills++;
@@ -138,14 +139,14 @@ public class Commandkillall extends EssentialsCommand
 				}
 				else if (all)
 				{
-					EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, Collections.EMPTY_LIST);
+					EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, new ArrayList<ItemStack>(0));
 					ess.getServer().getPluginManager().callEvent(event);
 					entity.remove();
 					numKills++;
 				}
 				else if (entityClass != null && entityClass.isAssignableFrom(entity.getClass()))
 				{
-					EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, Collections.EMPTY_LIST);
+					EntityDeathEvent event = new EntityDeathEvent((LivingEntity)entity, new ArrayList<ItemStack>(0));
 					ess.getServer().getPluginManager().callEvent(event);
 					entity.remove();
 					numKills++;

@@ -16,6 +16,7 @@ import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.dataholder.WorldDataHolder;
 import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.utils.PermissionCheckResult;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -171,6 +172,8 @@ public class AnjoPermissionsHandler extends PermissionsReaderInterface {
 			permArray.addAll(GroupManager.BukkitPermissions.getAllRegisteredPermissions(includeChildren));
 			allPerms = true;
 			perms.remove("*");
+			// Remove the no offline perms node as this should not be given.
+			perms.remove("groupmanager.noofflineperms");
 		}
 
 		for (String perm : perms) {
@@ -767,6 +770,9 @@ public class AnjoPermissionsHandler extends PermissionsReaderInterface {
 	}
 
 	/**
+	 * Wrapper for offline server checks.
+	 * Looks for the 'groupmanager.noofflineperms' permissions and reports no permissions on servers set to offline.
+	 * 
 	 * Check user and groups with inheritance and Bukkit if bukkit = true return
 	 * a PermissionCheckResult.
 	 * 
@@ -777,14 +783,42 @@ public class AnjoPermissionsHandler extends PermissionsReaderInterface {
 	 */
 	public PermissionCheckResult checkFullGMPermission(User user, String targetPermission, Boolean checkBukkit) {
 
+		/*
+		 * Report no permissions under the following conditions.
+		 * 
+		 * We are in offline mode
+		 * and the player has the 'groupmanager.noofflineperms' permission.
+		 */
+		if (user == null || targetPermission == null || targetPermission.isEmpty()
+				|| (!Bukkit.getServer().getOnlineMode()
+				&& (checkPermission(user, "groupmanager.noofflineperms", false).resultType == PermissionCheckResult.Type.FOUND))) {
+			
+			PermissionCheckResult result = new PermissionCheckResult();
+			result.accessLevel = targetPermission;
+			result.resultType = PermissionCheckResult.Type.NOTFOUND;
+			
+			return result;
+		}
+		
+		return checkPermission(user, targetPermission, checkBukkit);
+	}
+
+	/**
+	 * 
+	 * Check user and groups with inheritance and Bukkit if bukkit = true return
+	 * a PermissionCheckResult.
+	 * 
+	 * @param user
+	 * @param targetPermission
+	 * @param checkBukkit
+	 * @return PermissionCheckResult
+	 */
+	private PermissionCheckResult checkPermission(User user, String targetPermission, Boolean checkBukkit) {
+
 		PermissionCheckResult result = new PermissionCheckResult();
 		result.accessLevel = targetPermission;
 		result.resultType = PermissionCheckResult.Type.NOTFOUND;
-
-		if (user == null || targetPermission == null || targetPermission.isEmpty()) {
-			return result;
-		}
-
+		
 		if (checkBukkit) {
 			// Check Bukkit perms to support plugins which add perms via code
 			// (Heroes).
@@ -1003,6 +1037,15 @@ public class AnjoPermissionsHandler extends PermissionsReaderInterface {
 			userAccessLevelOffset = 1;
 			result = PermissionCheckResult.Type.NEGATION;
 		}
+		
+		if (fullPermissionName.equals(userAccessLevel)) {
+			return result;
+		}
+		
+		if ("groupmanager.noofflineperms".equals(fullPermissionName)) {
+			result = PermissionCheckResult.Type.NOTFOUND;
+		}
+		
 		if ("*".regionMatches(0, userAccessLevel, userAccessLevelOffset, userAccessLevelLength - userAccessLevelOffset)) {
 			return result;
 		}

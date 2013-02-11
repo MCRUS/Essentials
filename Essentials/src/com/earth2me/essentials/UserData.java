@@ -5,7 +5,6 @@ import java.io.File;
 import java.util.*;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,6 +65,7 @@ public abstract class UserData extends PlayerExtension implements IConf
 		kitTimestamps = _getKitTimestamps();
 		nickname = _getNickname();
 		setIgnoredPlayers(_getIgnoredPlayers());
+		logoutLocation = _getLogoutLocation();
 	}
 	private double money;
 
@@ -319,6 +319,37 @@ public abstract class UserData extends PlayerExtension implements IConf
 		config.setProperty("lastlocation", loc);
 		config.save();
 	}
+	
+	private Location logoutLocation;
+
+	private Location _getLogoutLocation()
+	{
+		try
+		{
+			return config.getLocation("logoutlocation", getServer());
+		}
+		catch (Exception e)
+		{
+			return null;
+		}
+	}
+
+	public Location getLogoutLocation()
+	{
+		return logoutLocation;
+	}
+	
+	public void setLogoutLocation(Location loc)
+	{
+		if (loc == null || loc.getWorld() == null)
+		{
+			return;
+		}
+		logoutLocation = loc;
+		config.setProperty("logoutlocation", loc);
+		config.save();
+	}
+	
 	private long lastTeleportTimestamp;
 
 	private long _getLastTeleportTimestamp()
@@ -794,44 +825,44 @@ public abstract class UserData extends PlayerExtension implements IConf
 	{
 		return config.getBoolean("powertoolsenabled", true);
 	}
-	private ConfigurationSection kitTimestamps;
-
-	private ConfigurationSection _getKitTimestamps()
+	private Map<String, Long> kitTimestamps;
+	
+	private Map<String, Long> _getKitTimestamps()
 	{
-
+		
 		if (config.isConfigurationSection("timestamps.kits"))
 		{
 			final ConfigurationSection section = config.getConfigurationSection("timestamps.kits");
-			final ConfigurationSection newSection = new MemoryConfiguration();
+			final Map<String, Long> timestamps = new HashMap<String, Long>();
 			for (String command : section.getKeys(false))
 			{
 				if (section.isLong(command))
 				{
-					newSection.set(command.toLowerCase(Locale.ENGLISH), section.getLong(command));
+					timestamps.put(command.toLowerCase(Locale.ENGLISH), section.getLong(command));
 				}
 				else if (section.isInt(command))
 				{
-					newSection.set(command.toLowerCase(Locale.ENGLISH), (long)section.getInt(command));
+					timestamps.put(command.toLowerCase(Locale.ENGLISH), (long)section.getInt(command));
 				}
 			}
-			return newSection;
+			return timestamps;
 		}
-		return new MemoryConfiguration();
+		return new HashMap<String, Long>();
 	}
-
+	
 	public long getKitTimestamp(String name)
 	{
 		name = name.replace('.', '_').replace('/', '_');
-		if (kitTimestamps != null)
+		if (kitTimestamps != null && kitTimestamps.containsKey(name))
 		{
-			return kitTimestamps.getLong(name, 0l);
+			return kitTimestamps.get(name);
 		}
 		return 0l;
 	}
 
 	public void setKitTimestamp(final String name, final long time)
 	{
-		kitTimestamps.set(name.toLowerCase(Locale.ENGLISH), time);
+		kitTimestamps.put(name.toLowerCase(Locale.ENGLISH), time);
 		config.setProperty("timestamps.kits", kitTimestamps);
 		config.save();
 	}

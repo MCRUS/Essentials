@@ -9,8 +9,8 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -30,44 +30,40 @@ public class EssentialsEntityListener implements Listener
 	{
 		final Entity eAttack = event.getDamager();
 		final Entity eDefend = event.getEntity();
-		if (eDefend instanceof Player && eAttack instanceof Player)
+		if (eAttack instanceof Player)
 		{
-			final User defender = ess.getUser(eDefend);
 			final User attacker = ess.getUser(eAttack);
-			onPlayerVsPlayerDamage(event, defender, attacker);
-			onPlayerVsPlayerPowertool(event, defender, attacker);
-		}
-		else if (eDefend instanceof Player && eAttack instanceof Projectile)
-		{
-			Entity shooter = ((Projectile)event.getDamager()).getShooter();
-			if (shooter instanceof Player)
+			if (eDefend instanceof Player)
 			{
-				final User defender = ess.getUser(eDefend);
-				final User attacker = ess.getUser(shooter);
-				onPlayerVsPlayerDamage(event, defender, attacker);
-				onPlayerVsPlayerPowertool(event, defender, attacker);
+				onPlayerVsPlayerDamage(event, (Player)eDefend, attacker);
 			}
-		}
-		else if (eAttack instanceof Player)
-		{
-			final User player = ess.getUser(eAttack);
-			player.updateActivity(true);
-			if (eDefend instanceof Ageable)
+			else if (eDefend instanceof Ageable)
 			{
-				final ItemStack hand = player.getItemInHand();
+				final ItemStack hand = attacker.getItemInHand();
 				if (hand != null && hand.getType() == Material.MILK_BUCKET)
 				{
 					((Ageable)eDefend).setBaby();
 					hand.setType(Material.BUCKET);
-					player.setItemInHand(hand);
-					player.updateInventory();
+					attacker.setItemInHand(hand);
+					attacker.updateInventory();
 					event.setCancelled(true);
 				}
+			}
+			attacker.updateActivity(true);
+		}
+		else if (eAttack instanceof Projectile && eDefend instanceof Player)
+		{
+			Entity shooter = ((Projectile)event.getDamager()).getShooter();
+			if (shooter instanceof Player)
+			{
+				final User attacker = ess.getUser(shooter);
+				onPlayerVsPlayerDamage(event, (Player)eDefend, attacker);
+				attacker.updateActivity(true);
 			}
 		}
 	}
 
-	private void onPlayerVsPlayerDamage(final EntityDamageByEntityEvent event, final User defender, final User attacker)
+	private void onPlayerVsPlayerDamage(final EntityDamageByEntityEvent event, final Player defender, final User attacker)
 	{
 		if (ess.getSettings().getLoginAttackDelay() > 0 && !attacker.isAuthorized("essentials.pvpdelay.exempt")
 			&& (System.currentTimeMillis() < (attacker.getLastLogin() + ess.getSettings().getLoginAttackDelay())))
@@ -75,7 +71,7 @@ public class EssentialsEntityListener implements Listener
 			event.setCancelled(true);
 		}
 
-		if (attacker.hasInvulnerabilityAfterTeleport() || defender.hasInvulnerabilityAfterTeleport())
+		if (!defender.equals(attacker.getBase()) && (attacker.hasInvulnerabilityAfterTeleport() || ess.getUser(defender).hasInvulnerabilityAfterTeleport()))
 		{
 			event.setCancelled(true);
 		}
@@ -90,17 +86,18 @@ public class EssentialsEntityListener implements Listener
 			event.setCancelled(true);
 		}
 
-		attacker.updateActivity(true);
+		onPlayerVsPlayerPowertool(event, defender, attacker);
 	}
 
-	private void onPlayerVsPlayerPowertool(final EntityDamageByEntityEvent event, final User defender, final User attacker)
+	private void onPlayerVsPlayerPowertool(final EntityDamageByEntityEvent event, final Player defender, final User attacker)
 	{
 		final List<String> commandList = attacker.getPowertool(attacker.getItemInHand());
 		if (commandList != null && !commandList.isEmpty())
 		{
-			for (final String command : commandList)
+			for (final String tempCommand : commandList)
 			{
-				if (command != null && !command.isEmpty())
+				final String command = tempCommand.replaceAll("\\{player\\}", defender.getName());
+				if (command != null && !command.isEmpty() && !command.equals(tempCommand))
 				{
 					ess.scheduleSyncDelayedTask(
 							new Runnable()
@@ -108,7 +105,7 @@ public class EssentialsEntityListener implements Listener
 								@Override
 								public void run()
 								{
-									attacker.getServer().dispatchCommand(attacker.getBase(), command.replaceAll("\\{player\\}", defender.getName()));
+									attacker.getServer().dispatchCommand(attacker.getBase(), command);
 									LOGGER.log(Level.INFO, String.format("[PT] %s issued server command: /%s", attacker.getName(), command));
 								}
 							});
@@ -172,6 +169,9 @@ public class EssentialsEntityListener implements Listener
 	{
 		if (event.getEntity() instanceof Player && ess.getUser(event.getEntity()).isGodModeEnabled())
 		{
+			final Player player = (Player)event.getEntity();
+			player.setFoodLevel(20);
+			player.setSaturation(10);
 			event.setCancelled(true);
 		}
 	}

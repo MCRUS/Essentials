@@ -6,9 +6,7 @@ import com.earth2me.essentials.commands.NoChargeException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 import java.util.*;
 import java.util.logging.Level;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
 
@@ -39,10 +37,11 @@ public class Kit
 
 	public static void checkTime(final User user, final String kitName, final Map<String, Object> els) throws Exception
 	{
-		if (user.isAuthorized("essentials.kit.exemptdelay")) {
+		if (user.isAuthorized("essentials.kit.exemptdelay"))
+		{
 			return;
 		}
-		
+
 		final Calendar time = new GregorianCalendar();
 
 		// Take the current time, and remove the delay from it.
@@ -87,7 +86,6 @@ public class Kit
 		{
 			throw new Exception(_("kitError2"));
 		}
-	
 
 		try
 		{
@@ -105,64 +103,34 @@ public class Kit
 		try
 		{
 			boolean spew = false;
+			final boolean allowUnsafe = ess.getSettings().allowUnsafeEnchantments();
 			for (String d : items)
 			{
-				if (d.startsWith(ess.getSettings().getCurrencySymbol())) 
+				if (d.startsWith(ess.getSettings().getCurrencySymbol()))
 				{
 					Double value = Double.parseDouble(d.substring(ess.getSettings().getCurrencySymbol().length()).trim());
 					Trade t = new Trade(value, ess);
 					t.pay(user);
 					continue;
 				}
-				final String[] parts = d.split(" ");
-				final String[] item = parts[0].split("[:+',;.]", 2);
-				final int id = Material.getMaterial(Integer.parseInt(item[0])).getId();
-				final short data = item.length > 1 ? Short.parseShort(item[1]) : 0;
-				final int amount = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
 
-				final ItemStack stack = new ItemStack(id, amount, data);
+				final String[] parts = d.split(" ");
+				final ItemStack parseStack = ess.getItemDb().get(parts[0], parts.length > 1 ? Integer.parseInt(parts[1]) : 1);
+				final MetaItemStack metaStack = new MetaItemStack(parseStack);
+
 				if (parts.length > 2)
 				{
-					for (int i = 2; i < parts.length; i++)
-					{
-						final String[] split = parts[i].split("[:+',;.]", 2);
-						if (split.length < 1)
-						{
-							continue;
-						}
-						final Enchantment enchantment = Enchantments.getByName(split[0]);
-						if (enchantment == null)
-						{
-							throw new Exception("Enchantment not found: " + split[0]);
-						}
-						int level;
-						if (split.length > 1)
-						{
-							level = Integer.parseInt(split[1]);
-						}
-						else
-						{
-							level = enchantment.getMaxLevel();
-						}
-						try
-						{
-							stack.addEnchantment(enchantment, level);
-						}
-						catch (Exception ex)
-						{
-							throw new Exception("Enchantment " + enchantment.getName() + ": " + ex.getMessage(), ex);
-						}
-					}
+					metaStack.parseStringMeta(user, allowUnsafe, parts, 2, ess);
 				}
 
 				final Map<Integer, ItemStack> overfilled;
 				if (user.isAuthorized("essentials.oversizedstacks"))
 				{
-					overfilled = InventoryWorkaround.addOversizedItems(user.getInventory(), ess.getSettings().getOversizedStackSize(), stack);
+					overfilled = InventoryWorkaround.addOversizedItems(user.getInventory(), ess.getSettings().getOversizedStackSize(), metaStack.getItemStack());
 				}
 				else
 				{
-					overfilled = InventoryWorkaround.addItems(user.getInventory(), stack);
+					overfilled = InventoryWorkaround.addItems(user.getInventory(), metaStack.getItemStack());
 				}
 				for (ItemStack itemStack : overfilled.values())
 				{

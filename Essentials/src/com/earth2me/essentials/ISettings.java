@@ -143,6 +143,8 @@ public interface ISettings extends IConf
 	boolean getFreezeAfkPlayers();
 
 	boolean cancelAfkOnMove();
+	
+	boolean cancelAfkOnInteract();
 
 	boolean areDeathMessagesEnabled();
 
@@ -151,6 +153,8 @@ public interface ISettings extends IConf
 	Set<String> getNoGodWorlds();
 
 	boolean getUpdateBedAtDaytime();
+	
+	boolean allowUnsafeEnchantments();
 
 	boolean getRepairEnchanted();
 

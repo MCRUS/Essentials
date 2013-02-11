@@ -47,7 +47,7 @@ public class Commandhome extends EssentialsCommand
 			if ("bed".equalsIgnoreCase(homeName) && user.isAuthorized("essentials.home.bed"))
 			{
 				final Location bed = player.getBedSpawnLocation();
-				if (bed != null && bed.getBlock().getType() == Material.BED_BLOCK)
+				if (bed != null)
 				{
 					user.getTeleport().teleport(bed, charge, TeleportCause.COMMAND);
 					throw new NoChargeException();
@@ -58,10 +58,6 @@ public class Commandhome extends EssentialsCommand
 		catch (NotEnoughArgumentsException e)
 		{
 			Location bed = player.getBedSpawnLocation();
-			if (bed != null && bed.getBlock().getType() != Material.BED_BLOCK)
-			{
-				bed = null;
-			}
 			final List<String> homes = player.getHomes();
 			if (homes.isEmpty() && player.equals(user))
 			{
@@ -69,7 +65,7 @@ public class Commandhome extends EssentialsCommand
 			}
 			else if (homes.isEmpty())
 			{
-				throw new Exception(player == user ? _("noHomeSet") : _("noHomeSetPlayer"));
+				throw new Exception(_("noHomeSetPlayer"));
 			}
 			else if (homes.size() == 1 && player.equals(user))
 			{
@@ -79,7 +75,7 @@ public class Commandhome extends EssentialsCommand
 			{
 				if (bed != null  && user.isAuthorized("essentials.home.bed"))
 				{
-					homes.add("bed");
+					homes.add(_("bed"));
 				}
 				user.sendMessage(_("homes", Util.joinList(homes)));
 			}

@@ -47,9 +47,12 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.defaults.VanillaCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -60,12 +63,13 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 import org.yaml.snakeyaml.error.YAMLException;
 
 
 public class Essentials extends JavaPlugin implements IEssentials
 {
-	public static final int BUKKIT_VERSION = 2543;
+	public static final int BUKKIT_VERSION = 2624;
 	private static final Logger LOGGER = Logger.getLogger("Minecraft");
 	private transient ISettings settings;
 	private final transient TNTExplodeListener tntListener = new TNTExplodeListener(this);
@@ -84,6 +88,7 @@ public class Essentials extends JavaPlugin implements IEssentials
 	private transient Metrics metrics;
 	private transient EssentialsTimer timer;
 	private transient List<String> vanishedPlayers = new ArrayList<String>();
+	private transient SimpleCommandMap scm;
 
 	@Override
 	public ISettings getSettings()
@@ -122,6 +127,7 @@ public class Essentials extends JavaPlugin implements IEssentials
 		i18n = new I18n(this);
 		i18n.onEnable();
 		execTimer.mark("I18n1");
+		scm = new SimpleCommandMap(this.getServer());
 		final PluginManager pm = getServer().getPluginManager();
 		for (Plugin plugin : pm.getPlugins())
 		{
@@ -176,6 +182,8 @@ public class Essentials extends JavaPlugin implements IEssentials
 			itemDb = new ItemDb(this);
 			confList.add(itemDb);
 			execTimer.mark("Init(Worth/ItemDB)");
+			jails = new Jails(this);
+			confList.add(jails);
 			reload();
 		}
 		catch (YAMLException exception)
@@ -207,6 +215,40 @@ public class Essentials extends JavaPlugin implements IEssentials
 		backup = new Backup(this);
 		permissionsHandler = new PermissionsHandler(this, settings.useBukkitPermissions());
 		alternativeCommandsHandler = new AlternativeCommandsHandler(this);
+
+		timer = new EssentialsTimer(this);
+		getScheduler().scheduleSyncRepeatingTask(this, timer, 100, 100);
+
+		Economy.setEss(this);
+		execTimer.mark("RegHandler");
+
+		final MetricsStarter metricsStarter = new MetricsStarter(this);
+		if (metricsStarter.getStart() != null && metricsStarter.getStart() == true)
+		{
+			getScheduler().runTaskLaterAsynchronously(this, metricsStarter, 1);
+		}
+		else if (metricsStarter.getStart() != null && metricsStarter.getStart() == false)
+		{
+			final MetricsListener metricsListener = new MetricsListener(this, metricsStarter);
+			pm.registerEvents(metricsListener, this);
+		}
+
+		final String timeroutput = execTimer.end();
+		if (getSettings().isDebug())
+		{
+			LOGGER.log(Level.INFO, "Essentials load " + timeroutput);
+		}
+	}
+
+	private void registerListeners(PluginManager pm)
+	{
+		HandlerList.unregisterAll(this);
+
+		if (getSettings().isDebug())
+		{
+			LOGGER.log(Level.INFO, "Registering Listeners");
+		}
+
 		final EssentialsPluginListener serverListener = new EssentialsPluginListener(this);
 		pm.registerEvents(serverListener, this);
 		confList.add(serverListener);
@@ -232,34 +274,9 @@ public class Essentials extends JavaPlugin implements IEssentials
 		final EssentialsWorldListener worldListener = new EssentialsWorldListener(this);
 		pm.registerEvents(worldListener, this);
 
-		//TODO: Check if this should be here, and not above before reload()
-		jails = new Jails(this);
-		confList.add(jails);
-
 		pm.registerEvents(tntListener, this);
 
-		timer = new EssentialsTimer(this);
-		getScheduler().scheduleSyncRepeatingTask(this, timer, 100, 100);
-
-		Economy.setEss(this);
-		execTimer.mark("RegListeners");
-
-		final MetricsStarter metricsStarter = new MetricsStarter(this);
-		if (metricsStarter.getStart() != null && metricsStarter.getStart() == true)
-		{
-			getScheduler().scheduleAsyncDelayedTask(this, metricsStarter, 1);
-		}
-		else if (metricsStarter.getStart() != null && metricsStarter.getStart() == false)
-		{
-			final MetricsListener metricsListener = new MetricsListener(this, metricsStarter);
-			pm.registerEvents(metricsListener, this);
-		}
-
-		final String timeroutput = execTimer.end();
-		if (getSettings().isDebug())
-		{
-			LOGGER.log(Level.INFO, "Essentials load " + timeroutput);
-		}
+		jails.resetListener();
 	}
 
 	@Override
@@ -291,6 +308,9 @@ public class Essentials extends JavaPlugin implements IEssentials
 		}
 
 		i18n.updateLocale(settings.getLocale());
+
+		final PluginManager pm = getServer().getPluginManager();
+		registerListeners(pm);
 	}
 
 	@Override
@@ -343,6 +363,16 @@ public class Essentials extends JavaPlugin implements IEssentials
 			// Check for disabled commands
 			if (getSettings().isCommandDisabled(commandLabel))
 			{
+				if (scm != null)
+				{
+					for (VanillaCommand cmd : scm.getFallbackCommands())
+					{
+						if (cmd.matches(commandLabel))
+						{
+							cmd.execute(sender, commandLabel, args);
+						}
+					}
+				}
 				return true;
 			}
 
@@ -579,9 +609,14 @@ public class Essentials extends JavaPlugin implements IEssentials
 	}
 
 	@Override
-	public int scheduleAsyncDelayedTask(final Runnable run)
+	public BukkitTask runTaskAsynchronously(final Runnable run)
 	{
-		return this.getScheduler().scheduleAsyncDelayedTask(this, run);
+		return this.getScheduler().runTaskAsynchronously(this, run);
+	}
+	@Override
+	public BukkitTask runTaskLaterAsynchronously(final Runnable run, final long delay)
+	{
+		return this.getScheduler().runTaskLaterAsynchronously(this, run, delay);
 	}
 
 	@Override

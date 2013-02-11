@@ -34,6 +34,7 @@ import org.anjocaido.groupmanager.utils.Tasks;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -65,6 +66,8 @@ public class GroupManager extends JavaPlugin {
 	protected static GlobalGroups globalGroups;
 
 	private GMLoggerHandler ch;
+	
+	private static GroupManagerEventHandler GMEventHandler;
 	public static BukkitPermissions BukkitPermissions;
 	private static GMWorldListener WorldEvents;
 	public static final Logger logger = Logger.getLogger(GroupManager.class.getName());
@@ -83,7 +86,10 @@ public class GroupManager extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		
+		/*
+		 * Initialize the event handler
+		 */
+		setGMEventHandler(new GroupManagerEventHandler(this));
 		onEnable(false);
 	}
 	
@@ -147,7 +153,7 @@ public class GroupManager extends JavaPlugin {
 				ch = new GMLoggerHandler();
 				GroupManager.logger.addHandler(ch);
 			}
-			logger.setLevel(Level.ALL);
+			GroupManager.logger.setLevel(Level.ALL);
 
 			// Create the backup folder, if it doesn't exist.
 			prepareFileFields();
@@ -382,16 +388,13 @@ public class GroupManager extends JavaPlugin {
 		Group senderGroup = null;
 		User senderUser = null;
 		boolean isOpOverride = config.isOpOverride();
+		boolean isAllowCommandBlocks = config.isAllowCommandBlocks();
 		
 		// PREVENT GM COMMANDS BEING USED ON COMMANDBLOCKS
-		if (sender instanceof BlockCommandSender) {
-			sender.sendMessage(ChatColor.RED + "GM Commands can not be called from CommandBlocks");
+		if (sender instanceof BlockCommandSender && !isAllowCommandBlocks) {
+			Block block = ((BlockCommandSender)sender).getBlock();
+			GroupManager.logger.warning(ChatColor.RED + "GM Commands can not be called from the CommandBlock at location: " + ChatColor.GREEN + block.getWorld().getName() + " - " + block.getX() + ", " + block.getY() + ", " + block.getZ());
 		  	return true;
-		}
-
-		if (sender.getClass().getName().equals("org.bukkit.craftbukkit.command.CraftBlockCommandSender")) {
-			sender.sendMessage(ChatColor.RED + "GM Commands can not be called from CommandBlocks");
-			return true;
 		}
 
 		// DETERMINING PLAYER INFORMATION
@@ -399,7 +402,7 @@ public class GroupManager extends JavaPlugin {
 			senderPlayer = (Player) sender;
 
 			if (!lastError.isEmpty() && !commandLabel.equalsIgnoreCase("manload")) {
-				sender.sendMessage(ChatColor.RED + "All commands are locked due to an error." + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "Check the log" + ChatColor.RESET + " and then try a '/manload'.");
+				sender.sendMessage(ChatColor.RED + "All commands are locked due to an error. " + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "Check the log" + ChatColor.RESET + "" + ChatColor.RED + " and then try a '/manload'.");
 				return true;
 			}
 
@@ -414,7 +417,7 @@ public class GroupManager extends JavaPlugin {
 		} else if ((sender instanceof ConsoleCommandSender) || (sender instanceof RemoteConsoleCommandSender)) {
 
 			if (!lastError.isEmpty() && !commandLabel.equalsIgnoreCase("manload")) {
-				sender.sendMessage(ChatColor.RED + "All commands are locked due to an error." + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "Check the log" + ChatColor.RESET + " and then try a '/manload'.");
+				sender.sendMessage(ChatColor.RED + "All commands are locked due to an error. " + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "Check the log" + ChatColor.RESET + "" + ChatColor.RED + " and then try a '/manload'.");
 				return true;
 			}
 
@@ -726,7 +729,7 @@ public class GroupManager extends JavaPlugin {
 					auxUser = dataHolder.getUser(args[0]);
 				}
 				// Validating your permissions
-				if (!isConsole && (senderGroup != null ? permissionHandler.inGroup(auxUser.getName(), senderGroup.getName()) : false)) {
+				if (!isConsole && !isOpOverride && (senderGroup != null ? permissionHandler.inGroup(auxUser.getName(), senderGroup.getName()) : false)) {
 					sender.sendMessage(ChatColor.RED + "Can't modify player with same group than you, or higher.");
 					return false;
 				}
@@ -959,7 +962,7 @@ public class GroupManager extends JavaPlugin {
 				}
 				// Validating your permissions
 				permissionResult = permissionHandler.checkFullUserPermission(senderUser, args[1]);
-				if (!isConsole && (permissionResult.resultType.equals(PermissionCheckResult.Type.NOTFOUND) || permissionResult.resultType.equals(PermissionCheckResult.Type.NEGATION))) {
+				if (!isConsole && !isOpOverride && (permissionResult.resultType.equals(PermissionCheckResult.Type.NOTFOUND) || permissionResult.resultType.equals(PermissionCheckResult.Type.NEGATION))) {
 					sender.sendMessage(ChatColor.RED + "You can't add a permission you don't have.");
 					return false;
 				}
@@ -1112,7 +1115,7 @@ public class GroupManager extends JavaPlugin {
 				// auxString = permissionHandler.checkUserOnlyPermission(auxUser, args[1]);
 				if (permissionResult.owner instanceof Group) {
 					if (permissionResult.resultType.equals(PermissionCheckResult.Type.NEGATION)) {
-						sender.sendMessage(ChatColor.RED + "The group inherits the a negation permission from group: " + permissionResult.owner.getName());
+						sender.sendMessage(ChatColor.RED + "The group inherits the negation permission from group: " + permissionResult.owner.getName());
 					} else {
 						sender.sendMessage(ChatColor.YELLOW + "The user inherits the permission from group: " + permissionResult.owner.getName());
 					}
@@ -1550,7 +1553,7 @@ public class GroupManager extends JavaPlugin {
 					auxUser = dataHolder.getUser(args[0]);
 				}
 				// Validating permission
-				if (!isConsole && (senderGroup != null ? permissionHandler.inGroup(auxUser.getName(), senderGroup.getName()) : false)) {
+				if (!isConsole && !isOpOverride && (senderGroup != null ? permissionHandler.inGroup(auxUser.getName(), senderGroup.getName()) : false)) {
 					sender.sendMessage(ChatColor.RED + "Can't modify player with same permissions than you, or higher.");
 					return false;
 				}
@@ -1584,7 +1587,7 @@ public class GroupManager extends JavaPlugin {
 					auxUser = dataHolder.getUser(args[0]);
 				}
 				// Validating permission
-				if (!isConsole && (senderGroup != null ? permissionHandler.inGroup(auxUser.getName(), senderGroup.getName()) : false)) {
+				if (!isConsole && !isOpOverride && (senderGroup != null ? permissionHandler.inGroup(auxUser.getName(), senderGroup.getName()) : false)) {
 					sender.sendMessage(ChatColor.RED + "You can't modify a player with same permissions as you, or higher.");
 					return false;
 				}
@@ -1681,7 +1684,7 @@ public class GroupManager extends JavaPlugin {
 				if (args.length > 0) {
 
 					if (!lastError.isEmpty()) {
-						sender.sendMessage(ChatColor.RED + "All commands are locked due to an error." + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "Check the log" + ChatColor.RESET + " and then try a '/manload'.");
+						sender.sendMessage(ChatColor.RED + "All commands are locked due to an error. " + ChatColor.BOLD + "" + ChatColor.UNDERLINE + "Check the log" + ChatColor.RESET + "" + ChatColor.RED + " and then try a '/manload'.");
 						return true;
 					}
 
@@ -1702,7 +1705,7 @@ public class GroupManager extends JavaPlugin {
 
 					isLoaded = true;
 
-					BukkitPermissions.updateAllPlayers();
+					BukkitPermissions.reset();
 
 				} else {
 
@@ -1723,7 +1726,7 @@ public class GroupManager extends JavaPlugin {
 				 * Fire an event as none will have been triggered in the reload.
 				 */
 				if (GroupManager.isLoaded())
-					GroupManagerEventHandler.callEvent(GMSystemEvent.Action.RELOADED);
+					GroupManager.getGMEventHandler().callEvent(GMSystemEvent.Action.RELOADED);
 
 				return true;
 
@@ -1895,7 +1898,7 @@ public class GroupManager extends JavaPlugin {
 
 			case manselect:
 				if (args.length < 1) {
-					sender.sendMessage(ChatColor.RED + "Review your arguments count! (/<command> <world>)");
+					sender.sendMessage(ChatColor.RED + "Review your arguments count! (/manselect <world>)");
 					sender.sendMessage(ChatColor.YELLOW + "Worlds available: ");
 					ArrayList<OverloadedWorldHolder> worlds = worldsHolder.allWorldsDataList();
 					auxString = "";
@@ -1933,6 +1936,42 @@ public class GroupManager extends JavaPlugin {
 				}
 				selectedWorlds.remove(sender);
 				sender.sendMessage(ChatColor.YELLOW + "You have removed your world selection. Working with current world(if possible).");
+
+				return true;
+				
+			case mancheckw:
+				if (args.length < 1) {
+					sender.sendMessage(ChatColor.RED + "Review your arguments count! (/mancheckw <world>)");
+					sender.sendMessage(ChatColor.YELLOW + "Worlds available: ");
+					ArrayList<OverloadedWorldHolder> worlds = worldsHolder.allWorldsDataList();
+					auxString = "";
+					for (int i = 0; i < worlds.size(); i++) {
+						auxString += worlds.get(i).getName();
+						if ((i + 1) < worlds.size()) {
+							auxString += ", ";
+						}
+					}
+					sender.sendMessage(ChatColor.YELLOW + auxString);
+					return false;
+				}
+				
+				auxString = "";
+				for (int i = 0; i < args.length; i++) {
+					if (args[i] == null) {
+						logger.warning("Bukkit gave invalid arguments array! Cmd: " + cmd.getName() + " args.length: " + args.length);
+						return false;
+					}
+					auxString += args[i];
+					if (i < (args.length - 1)) {
+						auxString += " ";
+					}
+				}
+				dataHolder = worldsHolder.getWorldData(auxString);
+				
+				sender.sendMessage(ChatColor.YELLOW + "You have selected world '" + dataHolder.getName() + "'.");
+				sender.sendMessage(ChatColor.YELLOW + "This world is using the following data files..");
+				sender.sendMessage(ChatColor.YELLOW + "Groups:" + ChatColor.GREEN + " " + dataHolder.getGroupsFile().getAbsolutePath());
+				sender.sendMessage(ChatColor.YELLOW + "Users:" + ChatColor.GREEN + " " + dataHolder.getUsersFile().getAbsolutePath());
 
 				return true;
 
@@ -2049,5 +2088,15 @@ public class GroupManager extends JavaPlugin {
 
 		return globalGroups;
 
+	}
+
+	public static GroupManagerEventHandler getGMEventHandler() {
+
+		return GMEventHandler;
+	}
+
+	public static void setGMEventHandler(GroupManagerEventHandler gMEventHandler) {
+
+		GMEventHandler = gMEventHandler;
 	}
 }

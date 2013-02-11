@@ -205,16 +205,11 @@ player-commands:
 
 # Note: All items MUST be followed by a quantity!
 # All kit names should be lower case, and will be treated as lower in permissions/costs.
-# Syntax: - itemID[:DataValue] Amount [Enchantment:Level]..
+# Syntax: - itemID[:DataValue/Durability] Amount [Enchantment:Level].. [itemmeta:value]...
+# For Item meta information visit http://wiki.ess3.net/wiki/Item_Meta
 # 'delay' refers to the cooldown between how often you can use each kit, measured in seconds.
-# For more information, visit http://wiki.ess3.net/wiki/Command_Reference/ICheat#kits
+# For more information, visit http://wiki.ess3.net/wiki/Kits
 kits:
-  dtools:
-    delay: 10
-    items:
-      - 277 1 efficiency:1 durability:1
-      - 278 1
-      - 279:780 1
   tools:
     delay: 10
     items:
@@ -222,6 +217,27 @@ kits:
       - 273 1
       - 274 1
       - 275 1
+  dtools:
+    delay: 600
+    items:
+      - 278 1 efficiency:1 durability:1 fortune:1 name:&4Gigadrill lore:The_drill_that_&npierces|the_heavens
+      - 277 1 digspeed:3 name:Dwarf lore:Diggy|Diggy|Hole
+      - 298 1 color:255,255,255 name:Top_Hat lore:Good_day,_Good_day
+      - 279:780 1
+  notch:
+    delay: 6000
+    items:
+      - 397:3 1 player:Notch
+  color:
+    delay: 6000
+    items:
+      - 387 1 title:&4Book_&9o_&6Colors author:KHobbits lore:Ingame_color_codes book:Colors
+  firework:
+    delay: 6000
+    items:
+      - 401 1 name:Angry_Creeper color:red fade:green type:creeper power:1
+      - 401 1 name:StarryNight color:yellow,orange fade:blue type:star effect:trail,twinkle power:1
+      - 401 2 name:SolarWind color:yellow,orange fade:red shape:large effect:twinkle color:yellow,orange fade:red shape:ball effect:trail color:red,purple fade:pink shape:star effect:trail power:1
 
 # Essentials Sign Control
 # See http://wiki.ess3.net/wiki/Sign_Tutorial for instructions on how to use these.
@@ -247,7 +263,7 @@ enabledSigns:
   #- spawnmob
   #- repair
   #- time
-  #- weather  
+  #- weather
   
 # How many times per second can Essentials signs be interacted with per player.
 # Values should be between 1-20, 20 being virtually no lag protection.
@@ -283,11 +299,13 @@ remove-god-on-disconnect: false
 
 # Auto-AFK
 # After this timeout in seconds, the user will be set as afk.
+# This feature requires the player to have essentials.auto.afk node
 # Set to -1 for no timeout.
 auto-afk: 300
 
 # Auto-AFK Kick
 # After this timeout in seconds, the user will be kicked from the server.
+# essentials.afk.kickexempt node overrides this feature
 # Set to -1 for no timeout.
 auto-afk-kick: -1
 
@@ -301,8 +319,12 @@ freeze-afk-players: false
 # Enable this, when you don't want people idling in mob traps.
 disable-item-pickup-while-afk: false
 
+# This setting controls if a player is marked as active on interaction.
+# When this setting is false, you will need to manually un-AFK using the /afk command.
+cancel-afk-on-interact: true
+
 # Should we automatically remove afk status when the player moves?
-# Player will be removed from afk on chat/command regardless of this setting.
+# Player will be removed from AFK on chat/command regardless of this setting.
 # Disable this to reduce server lag.
 cancel-afk-on-move: true
 
@@ -333,6 +355,10 @@ oversized-stacksize: 64
 # If you set this to false, you can still allow it for certain players using the permission
 # essentials.repair.enchanted
 repair-enchanted: true
+
+# Allow 'unsafe' enchantments in kits and item spawning.
+# Warning: Mixing and overleveling some enchantments can cause issues with clients, servers and plugins.
+unsafe-enchantments: false
 
 #Do you want essentials to keep track of previous location for /back in the teleport listener?
 #If you set this to true any plugin that uses teleport will have the previous location registered.
@@ -379,7 +405,7 @@ sethome-multiple:
 
 # Set timeout in seconds for players to accept tpa before request is cancelled.
 # Set to 0 for no timeout
-tpa-accept-cancellation: 0
+tpa-accept-cancellation: 120
 
 ############################################################
 # +------------------------------------------------------+ #

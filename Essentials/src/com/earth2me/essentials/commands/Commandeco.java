@@ -2,6 +2,7 @@ package com.earth2me.essentials.commands;
 
 import static com.earth2me.essentials.I18n._;
 import com.earth2me.essentials.User;
+import com.earth2me.essentials.Util;
 import java.util.Locale;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
@@ -18,6 +19,9 @@ public class Commandeco extends EssentialsCommand
 	@Override
 	public void run(final Server server, final CommandSender sender, final String commandLabel, final String[] args) throws Exception
 	{
+		Double broadcast = null;
+		Double broadcastAll = null;
+		final double startingBalance = (double)ess.getSettings().getStartingBalance();
 		if (args.length < 2)
 		{
 			throw new NotEnoughArgumentsException();
@@ -34,6 +38,8 @@ public class Commandeco extends EssentialsCommand
 			throw new NotEnoughArgumentsException(ex);
 		}
 
+		final double minBalance = ess.getSettings().getMinMoney();
+
 		if (args[1].contentEquals("**"))
 		{
 			for (String sUser : ess.getUserMap().getAllUniqueUsers())
@@ -49,11 +55,25 @@ public class Commandeco extends EssentialsCommand
 					if (player.canAfford(amount, false))
 					{
 						player.takeMoney(amount);
-					}					
+					}
+					else
+					{
+						if (player.getMoney() > 0)
+						{
+							player.setMoney(0);
+						}
+					}
 					break;
 
 				case RESET:
-					player.setMoney(amount == 0 ? ess.getSettings().getStartingBalance() : amount);
+					player.setMoney(startingBalance);
+					broadcastAll = startingBalance;
+					break;
+
+				case SET:
+					boolean underMinimum = (player.getMoney() - amount) < minBalance;
+					player.setMoney(underMinimum ? minBalance : amount);
+					broadcastAll = underMinimum ? minBalance : amount;
 					break;
 				}
 			}
@@ -70,15 +90,28 @@ public class Commandeco extends EssentialsCommand
 					break;
 
 				case TAKE:
-					if (!player.canAfford(amount, false))
+					if (player.canAfford(amount))
 					{
-						throw new Exception(_("notEnoughMoney"));
+						player.takeMoney(amount);
 					}
-					player.takeMoney(amount);
+					else
+					{
+						if (player.getMoney() > 0)
+						{
+							player.setMoney(0);
+						}
+					}
 					break;
 
 				case RESET:
-					player.setMoney(amount == 0 ? ess.getSettings().getStartingBalance() : amount);
+					player.setMoney(startingBalance);
+					broadcast = startingBalance;
+					break;
+
+				case SET:
+					boolean underMinimum = (player.getMoney() - amount) < minBalance;
+					player.setMoney(underMinimum ? minBalance : amount);
+					broadcast = underMinimum ? minBalance : amount;
 					break;
 				}
 			}
@@ -93,23 +126,38 @@ public class Commandeco extends EssentialsCommand
 				break;
 
 			case TAKE:
-				if (!player.canAfford(amount, false))
+				if (!player.canAfford(amount))
 				{
 					throw new Exception(_("notEnoughMoney"));
+					
 				}
 				player.takeMoney(amount, sender);
 				break;
 
 			case RESET:
-				player.setMoney(amount == 0 ? ess.getSettings().getStartingBalance() : amount);
+				player.setMoney(startingBalance);
+				break;
+
+			case SET:
+				boolean underMinimum = (player.getMoney() - amount) < minBalance;
+				player.setMoney(underMinimum ? minBalance : amount);
 				break;
 			}
+		}
+
+		if (broadcast != null)
+		{
+			server.broadcastMessage(_("resetBal", Util.formatAsCurrency(broadcast)));
+		}
+		if (broadcastAll != null)
+		{
+			server.broadcastMessage(_("resetBalAll", Util.formatAsCurrency(broadcastAll)));
 		}
 	}
 
 
 	private enum EcoCommands
 	{
-		GIVE, TAKE, RESET
+		GIVE, TAKE, RESET, SET
 	}
 }

@@ -3,6 +3,7 @@ package com.earth2me.essentials.commands;
 import static com.earth2me.essentials.I18n._;
 import com.earth2me.essentials.Util;
 import java.lang.management.ManagementFactory;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.World;
@@ -33,14 +34,15 @@ public class Commandgc extends EssentialsCommand
 		{
 			color = ChatColor.RED;
 		}
-		
+
 		sender.sendMessage(_("uptime", Util.formatDateDiff(ManagementFactory.getRuntimeMXBean().getStartTime())));
 		sender.sendMessage(_("tps", "" + color + tps));
 		sender.sendMessage(_("gcmax", (Runtime.getRuntime().maxMemory() / 1024 / 1024)));
 		sender.sendMessage(_("gctotal", (Runtime.getRuntime().totalMemory() / 1024 / 1024)));
-		sender.sendMessage(_("gcfree", (Runtime.getRuntime().freeMemory() / 1024 / 1024)));		
+		sender.sendMessage(_("gcfree", (Runtime.getRuntime().freeMemory() / 1024 / 1024)));
 
-		for (World w : server.getWorlds())
+		List<World> worlds = server.getWorlds();
+		for (World w : worlds)
 		{
 			String worldType = "World";
 			switch (w.getEnvironment())
@@ -55,6 +57,5 @@ public class Commandgc extends EssentialsCommand
 
 			sender.sendMessage(_("gcWorld", worldType, w.getName(), w.getLoadedChunks().length, w.getEntities().size()));
 		}
-		
 	}
 }

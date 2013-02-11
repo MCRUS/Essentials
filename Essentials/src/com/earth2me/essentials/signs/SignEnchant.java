@@ -17,7 +17,16 @@ public class SignEnchant extends EssentialsSign
 	@Override
 	protected boolean onSignCreate(final ISign sign, final User player, final String username, final IEssentials ess) throws SignException, ChargeException
 	{
-		final ItemStack stack = sign.getLine(1).equals("*") || sign.getLine(1).equalsIgnoreCase("any") ? null : getItemStack(sign.getLine(1), 1, ess);
+		final ItemStack stack;
+		try
+		{
+			stack = sign.getLine(1).equals("*") || sign.getLine(1).equalsIgnoreCase("any") ? null : getItemStack(sign.getLine(1), 1, ess);
+		}
+		catch (SignException e)
+		{
+			sign.setLine(1, "§c<item|any>");
+			throw e;
+		}
 		final String[] enchantLevel = sign.getLine(2).split(":");
 		if (enchantLevel.length != 2)
 		{
@@ -40,7 +49,8 @@ public class SignEnchant extends EssentialsSign
 			sign.setLine(2, "§c<enchant>");
 			throw new SignException(ex.getMessage(), ex);
 		}
-		if (level < 1 || level > enchantment.getMaxLevel())
+		final boolean allowUnsafe = ess.getSettings().allowUnsafeEnchantments() && player.isAuthorized("essentials.enchant.allowunsafe");
+		if (level < 0 || (!allowUnsafe && level > enchantment.getMaxLevel()))
 		{
 			level = enchantment.getMaxLevel();
 			sign.setLine(2, enchantLevel[0] + ":" + level);
@@ -49,7 +59,14 @@ public class SignEnchant extends EssentialsSign
 		{
 			if (stack != null)
 			{
-				stack.addEnchantment(enchantment, level);
+				if (allowUnsafe)
+				{
+					stack.addUnsafeEnchantment(enchantment, level);
+				}
+				else
+				{
+					stack.addEnchantment(enchantment, level);
+				}
 			}
 		}
 		catch (Throwable ex)
@@ -103,11 +120,35 @@ public class SignEnchant extends EssentialsSign
 		final ItemStack toEnchant = playerHand;
 		try
 		{
-			toEnchant.addEnchantment(enchantment, level);
+			if (level == 0)
+			{
+				toEnchant.removeEnchantment(enchantment);
+			}
+			else
+			{
+				if (ess.getSettings().allowUnsafeEnchantments())
+				{
+					toEnchant.addUnsafeEnchantment(enchantment, level);
+				}
+				else
+				{
+					toEnchant.addEnchantment(enchantment, level);
+				}
+			}
 		}
 		catch (Exception ex)
 		{
 			throw new SignException(ex.getMessage(), ex);
+		}
+
+		final String enchantmentName = enchantment.getName().toLowerCase(Locale.ENGLISH);
+		if (level == 0)
+		{
+			player.sendMessage(_("enchantmentRemoved", enchantmentName.replace('_', ' ')));
+		}
+		else
+		{
+			player.sendMessage(_("enchantmentApplied", enchantmentName.replace('_', ' ')));
 		}
 
 		charge.charge(player);

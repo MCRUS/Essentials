@@ -3,6 +3,7 @@ package com.earth2me.essentials;
 import static com.earth2me.essentials.I18n._;
 import com.earth2me.essentials.api.IItemDb;
 import java.util.*;
+import java.util.regex.Pattern;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -20,6 +21,7 @@ public class ItemDb implements IConf, IItemDb
 	private final transient Map<ItemData, List<String>> names = new HashMap<ItemData, List<String>>();
 	private final transient Map<String, Short> durabilities = new HashMap<String, Short>();
 	private final transient ManagedFile file;
+	private final transient Pattern splitPattern = Pattern.compile("[:+',;.]");
 
 	@Override
 	public void reloadConfig()
@@ -84,19 +86,20 @@ public class ItemDb implements IConf, IItemDb
 		int itemid = 0;
 		String itemname = null;
 		short metaData = 0;
+		String[] parts = splitPattern.split(id);;
 		if (id.matches("^\\d+[:+',;.]\\d+$"))
 		{
-			itemid = Integer.parseInt(id.split("[:+',;.]")[0]);
-			metaData = Short.parseShort(id.split("[:+',;.]")[1]);
+			itemid = Integer.parseInt(parts[0]);
+			metaData = Short.parseShort(parts[1]);
 		}
-		else if (id.matches("^\\d+$"))
+		else if (Util.isInt(id))
 		{
 			itemid = Integer.parseInt(id);
 		}
 		else if (id.matches("^[^:+',;.]+[:+',;.]\\d+$"))
 		{
-			itemname = id.split("[:+',;.]")[0].toLowerCase(Locale.ENGLISH);
-			metaData = Short.parseShort(id.split("[:+',;.]")[1]);
+			itemname = parts[0].toLowerCase(Locale.ENGLISH);
+			metaData = Short.parseShort(parts[1]);
 		}
 		else
 		{
@@ -134,25 +137,28 @@ public class ItemDb implements IConf, IItemDb
 		retval.setDurability(metaData);
 		return retval;
 	}
-
+	
 	public String names(ItemStack item)
 	{
 		ItemData itemData = new ItemData(item.getTypeId(), item.getDurability());
 		List<String> nameList = names.get(itemData);
-		if (nameList == null) {
-			itemData = new ItemData(item.getTypeId(), (short) 0);
+		if (nameList == null)
+		{
+			itemData = new ItemData(item.getTypeId(), (short)0);
 			nameList = names.get(itemData);
-			if (nameList == null) {
+			if (nameList == null)
+			{
 				return null;
 			}
 		}
-		
+
 		if (nameList.size() > 15)
 		{
 			nameList = nameList.subList(0, 14);
 		}
 		return Util.joinList(", ", nameList);
 	}
+
 
 	class ItemData
 	{
@@ -197,6 +203,7 @@ public class ItemDb implements IConf, IItemDb
 				   && this.itemData == pairo.getItemData();
 		}
 	}
+
 
 	class LengthCompare implements java.util.Comparator<String>
 	{

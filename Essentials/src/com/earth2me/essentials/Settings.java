@@ -468,7 +468,8 @@ public class Settings implements ISettings
 		teleportInvulnerability = _isTeleportInvulnerability();
 		disableItemPickupWhileAfk = _getDisableItemPickupWhileAfk();
 		registerBackInListener = _registerBackInListener();
-		cancelAfkOnMove = _cancelAfkOnMove();
+		cancelAfkOnInteract = _cancelAfkOnInteract();
+		cancelAfkOnMove = _cancelAfkOnMove() && cancelAfkOnInteract;
 		getFreezeAfkPlayers = _getFreezeAfkPlayers();
 		itemSpawnBl = _getItemSpawnBlacklist();
 		loginAttackDelay = _getLoginAttackDelay();
@@ -831,6 +832,18 @@ public class Settings implements ISettings
 	{
 		return config.getBoolean("cancel-afk-on-move", true);
 	}
+	private boolean cancelAfkOnInteract;
+
+	@Override
+	public boolean cancelAfkOnInteract()
+	{
+		return cancelAfkOnInteract;
+	}
+
+	private boolean _cancelAfkOnInteract()
+	{
+		return config.getBoolean("cancel-afk-on-interact", true);
+	}
 
 	@Override
 	public boolean areDeathMessagesEnabled()
@@ -855,6 +868,12 @@ public class Settings implements ISettings
 	public boolean getRepairEnchanted()
 	{
 		return config.getBoolean("repair-enchanted", true);
+	}
+
+	@Override
+	public boolean allowUnsafeEnchantments()
+	{
+		return config.getBoolean("unsafe-enchantments", false);
 	}
 
 	@Override
@@ -923,7 +942,7 @@ public class Settings implements ISettings
 	@Override
 	public long getTpaAcceptCancellation()
 	{
-		return config.getLong("tpa-accept-cancellation", 0);
+		return config.getLong("tpa-accept-cancellation", 120);
 	}
 
 	@Override

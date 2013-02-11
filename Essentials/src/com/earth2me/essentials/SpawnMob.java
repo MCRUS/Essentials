@@ -238,15 +238,15 @@ public class SpawnMob
 
 		if (type == EntityType.OCELOT)
 		{
-			if (data.contains("siamese"))
+			if (data.contains("siamese") || data.contains("white"))
 			{
 				((Ocelot)spawned).setCatType(Ocelot.Type.SIAMESE_CAT);
 			}
-			else if (data.contains("red"))
+			else if (data.contains("red") || data.contains("orange") || data.contains("tabby"))
 			{
 				((Ocelot)spawned).setCatType(Ocelot.Type.RED_CAT);
 			}
-			else if (data.contains("black"))
+			else if (data.contains("black") || data.contains("tuxedo"))
 			{
 				((Ocelot)spawned).setCatType(Ocelot.Type.BLACK_CAT);
 			}
@@ -283,5 +283,13 @@ public class SpawnMob
 			}
 		}
 
+		if (type == EntityType.EXPERIENCE_ORB)
+		{
+			if (Util.isInt(data))
+			{
+				((ExperienceOrb)spawned).setExperience(Integer.parseInt(data));
+
+			}
+		}
 	}
 }

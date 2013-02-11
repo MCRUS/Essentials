@@ -4,7 +4,6 @@ import static com.earth2me.essentials.I18n._;
 import com.earth2me.essentials.Trade;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.Util;
-import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 import java.util.Locale;
 import java.util.logging.Level;
 import org.bukkit.Material;
@@ -117,19 +116,7 @@ public class Commandsell extends EssentialsCommand
 		int max = 0;
 		for (ItemStack s : user.getInventory().getContents())
 		{
-			if (s == null)
-			{
-				continue;
-			}
-			if (s.getTypeId() != is.getTypeId())
-			{
-				continue;
-			}
-			if (s.getDurability() != is.getDurability())
-			{
-				continue;
-			}
-			if (!s.getEnchantments().equals(is.getEnchantments()))
+			if (s == null || !s.isSimilar(is))
 			{
 				continue;
 			}
@@ -166,6 +153,10 @@ public class Commandsell extends EssentialsCommand
 		//TODO: Prices for Enchantments
 		final ItemStack ris = is.clone();
 		ris.setAmount(amount);
+		if (!user.getInventory().containsAtLeast(ris, amount)) {
+			// This should never happen.
+			throw new IllegalStateException("Trying to remove more items than are available.");
+		}
 		user.getInventory().removeItem(ris);
 		user.updateInventory();
 		Trade.log("Command", "Sell", "Item", user.getName(), new Trade(ris, ess), user.getName(), new Trade(worth * amount, ess), user.getLocation(), ess);

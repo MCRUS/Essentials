@@ -5,13 +5,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
 import org.bukkit.enchantments.Enchantment;
 
 
 public class Enchantments
 {
-	private static final transient Pattern NUMPATTERN = Pattern.compile("\\d+");
 	private static final Map<String, Enchantment> ENCHANTMENTS = new HashMap<String, Enchantment>();
 	private static final Map<String, Enchantment> ALIASENCHANTMENTS = new HashMap<String, Enchantment>();
 
@@ -20,7 +18,7 @@ public class Enchantments
 		ENCHANTMENTS.put("alldamage", Enchantment.DAMAGE_ALL);
 		ALIASENCHANTMENTS.put("alldmg", Enchantment.DAMAGE_ALL);
 		ENCHANTMENTS.put("sharpness", Enchantment.DAMAGE_ALL);
-		ENCHANTMENTS.put("sharp", Enchantment.DAMAGE_ALL);
+		ALIASENCHANTMENTS.put("sharp", Enchantment.DAMAGE_ALL);
 		ALIASENCHANTMENTS.put("dal", Enchantment.DAMAGE_ALL);
 				
 		ENCHANTMENTS.put("ardmg", Enchantment.DAMAGE_ARTHROPODS);
@@ -38,11 +36,18 @@ public class Enchantments
 		ALIASENCHANTMENTS.put("minespeed", Enchantment.DIG_SPEED);
 		ALIASENCHANTMENTS.put("cutspeed", Enchantment.DIG_SPEED);
 		ALIASENCHANTMENTS.put("ds", Enchantment.DIG_SPEED);
+		ALIASENCHANTMENTS.put("eff", Enchantment.DIG_SPEED);
 		
 		ENCHANTMENTS.put("durability", Enchantment.DURABILITY);
-		ENCHANTMENTS.put("dura", Enchantment.DURABILITY);
+		ALIASENCHANTMENTS.put("dura", Enchantment.DURABILITY);
 		ENCHANTMENTS.put("unbreaking", Enchantment.DURABILITY);
 		ALIASENCHANTMENTS.put("d", Enchantment.DURABILITY);
+		
+		ENCHANTMENTS.put("thorns", Enchantment.THORNS);
+		ENCHANTMENTS.put("highcrit", Enchantment.THORNS);
+		ALIASENCHANTMENTS.put("thorn", Enchantment.THORNS);
+		ALIASENCHANTMENTS.put("highercrit", Enchantment.THORNS);
+		ALIASENCHANTMENTS.put("t", Enchantment.THORNS);
 		
 		ENCHANTMENTS.put("fireaspect", Enchantment.FIRE_ASPECT);
 		ENCHANTMENTS.put("fire", Enchantment.FIRE_ASPECT);
@@ -51,10 +56,13 @@ public class Enchantments
 		ALIASENCHANTMENTS.put("fa", Enchantment.FIRE_ASPECT);
 		
 		ENCHANTMENTS.put("knockback", Enchantment.KNOCKBACK);
+		ALIASENCHANTMENTS.put("kback", Enchantment.KNOCKBACK);
+		ALIASENCHANTMENTS.put("kb", Enchantment.KNOCKBACK);
 		ALIASENCHANTMENTS.put("k", Enchantment.KNOCKBACK);
 		
 		ALIASENCHANTMENTS.put("blockslootbonus", Enchantment.LOOT_BONUS_BLOCKS);
 		ENCHANTMENTS.put("fortune", Enchantment.LOOT_BONUS_BLOCKS);
+		ALIASENCHANTMENTS.put("fort", Enchantment.LOOT_BONUS_BLOCKS);
 		ALIASENCHANTMENTS.put("lbb", Enchantment.LOOT_BONUS_BLOCKS);
 		
 		ALIASENCHANTMENTS.put("mobslootbonus", Enchantment.LOOT_BONUS_MOBS);
@@ -83,7 +91,7 @@ public class Enchantments
 		ALIASENCHANTMENTS.put("fallprotection", Enchantment.PROTECTION_FALL);
 		ENCHANTMENTS.put("fallprot", Enchantment.PROTECTION_FALL);
 		ENCHANTMENTS.put("featherfall", Enchantment.PROTECTION_FALL);
-		ENCHANTMENTS.put("featherfalling", Enchantment.PROTECTION_FALL);
+		ALIASENCHANTMENTS.put("featherfalling", Enchantment.PROTECTION_FALL);
 		ALIASENCHANTMENTS.put("pfa", Enchantment.PROTECTION_FALL);
 		
 		ALIASENCHANTMENTS.put("fireprotection", Enchantment.PROTECTION_FIRE);
@@ -129,12 +137,12 @@ public class Enchantments
 		ALIASENCHANTMENTS.put("infinite", Enchantment.ARROW_INFINITE);
 		ALIASENCHANTMENTS.put("unlimited", Enchantment.ARROW_INFINITE);
 		ALIASENCHANTMENTS.put("unlimitedarrows", Enchantment.ARROW_INFINITE);
-		ALIASENCHANTMENTS.put("ai", Enchantment.ARROW_INFINITE);
+		ALIASENCHANTMENTS.put("ai", Enchantment.ARROW_INFINITE);			
 	}
 	
 	public static Enchantment getByName(String name) {
 		Enchantment enchantment;
-		if (NUMPATTERN.matcher(name).matches()) {
+		if (Util.isInt(name)) {
 			enchantment = Enchantment.getById(Integer.parseInt(name));
 		} else {
 			enchantment = Enchantment.getByName(name.toUpperCase(Locale.ENGLISH));

@@ -1150,4 +1150,22 @@ public class OfflinePlayer implements Player
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}
+
+	@Override
+	public void setTexturePack(String string)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setMaxHealth(int i)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void resetMaxHealth()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
 }

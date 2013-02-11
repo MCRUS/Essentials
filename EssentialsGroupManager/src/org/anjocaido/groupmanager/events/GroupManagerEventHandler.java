@@ -1,7 +1,9 @@
 package org.anjocaido.groupmanager.events;
 
+import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.data.Group;
 import org.anjocaido.groupmanager.data.User;
+import org.bukkit.Server;
 
 /**
  * @author ElgarL
@@ -10,44 +12,73 @@ import org.anjocaido.groupmanager.data.User;
  * 
  */
 public class GroupManagerEventHandler {
+	
+	private final Server server;
+	private final GroupManager plugin;
+	
 
-	protected static void callEvent(GMGroupEvent event) {
+	public GroupManagerEventHandler(GroupManager plugin) {
+		
+		this.plugin = plugin;
+		this.server = plugin.getServer();
+		
+	}
+
+	protected void callEvent(GMGroupEvent event) {
 
 		event.schedule(event);
 	}
 
-	protected static void callEvent(GMUserEvent event) {
+	protected void callEvent(GMUserEvent event) {
 
 		event.schedule(event);
 	}
 
-	protected static void callEvent(GMSystemEvent event) {
+	protected void callEvent(GMSystemEvent event) {
 
 		event.schedule(event);
 	}
 
-	public static void callEvent(Group group, GMGroupEvent.Action action) {
+	public void callEvent(Group group, GMGroupEvent.Action action) {
 
 		callEvent(new GMGroupEvent(group, action));
 	}
 
-	public static void callEvent(String groupName, GMGroupEvent.Action action) {
+	public void callEvent(String groupName, GMGroupEvent.Action action) {
 
 		callEvent(new GMGroupEvent(groupName, action));
 	}
 
-	public static void callEvent(User user, GMUserEvent.Action action) {
+	public void callEvent(User user, GMUserEvent.Action action) {
 
 		callEvent(new GMUserEvent(user, action));
 	}
 
-	public static void callEvent(String userName, GMUserEvent.Action action) {
+	public void callEvent(String userName, GMUserEvent.Action action) {
 
 		callEvent(new GMUserEvent(userName, action));
 	}
 
-	public static void callEvent(GMSystemEvent.Action action) {
+	public void callEvent(GMSystemEvent.Action action) {
 
 		callEvent(new GMSystemEvent(action));
 	}
+	
+	/**
+	 * @return the plugin
+	 */
+	public GroupManager getPlugin() {
+	
+		return plugin;
+	}
+	
+	/**
+	 * @return the server
+	 */
+	public Server getServer() {
+	
+		return server;
+	}
+
+	
 }

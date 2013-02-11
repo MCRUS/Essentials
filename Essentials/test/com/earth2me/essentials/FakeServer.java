@@ -1,15 +1,16 @@
 package com.earth2me.essentials;
 
 import com.avaje.ebean.config.ServerConfig;
+import com.earth2me.essentials.OfflinePlayer;
 import com.earth2me.essentials.craftbukkit.FakeWorld;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
+import org.bukkit.*;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World.Environment;
-import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
@@ -40,11 +41,13 @@ public class FakeServer implements Server
 		}
 	}
 
+	@Override
 	public String getName()
 	{
 		return "Essentials Fake Server";
 	}
 
+	@Override
 	public String getVersion()
 	{
 		return "1.0";
@@ -178,19 +181,6 @@ public class FakeServer implements Server
 			}
 
 			@Override
-			public int scheduleAsyncDelayedTask(Plugin plugin, Runnable r, long l)
-			{
-				throw new UnsupportedOperationException("Not supported yet.");
-			}
-
-			@Override
-			public int scheduleAsyncDelayedTask(Plugin plugin, Runnable r)
-			{
-				r.run();
-				return 0;
-			}
-
-			@Override
 			public int scheduleAsyncRepeatingTask(Plugin plugin, Runnable r, long l, long l1)
 			{
 				throw new UnsupportedOperationException("Not supported yet.");
@@ -253,7 +243,8 @@ public class FakeServer implements Server
 			@Override
 			public BukkitTask runTaskAsynchronously(Plugin plugin, Runnable r) throws IllegalArgumentException
 			{
-				throw new UnsupportedOperationException("Not supported yet.");
+				r.run();	  	
+				return null;
 			}
 
 			@Override
@@ -265,7 +256,8 @@ public class FakeServer implements Server
 			@Override
 			public BukkitTask runTaskLaterAsynchronously(Plugin plugin, Runnable r, long l) throws IllegalArgumentException
 			{
-				throw new UnsupportedOperationException("Not supported yet.");
+				r.run();	  	
+				return null;
 			}
 
 			@Override
@@ -276,6 +268,18 @@ public class FakeServer implements Server
 
 			@Override
 			public BukkitTask runTaskTimerAsynchronously(Plugin plugin, Runnable r, long l, long l1) throws IllegalArgumentException
+			{
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+
+			@Override
+			public int scheduleAsyncDelayedTask(Plugin plugin, Runnable r, long l)
+			{
+				throw new UnsupportedOperationException("Not supported yet.");
+			}
+
+			@Override
+			public int scheduleAsyncDelayedTask(Plugin plugin, Runnable r)
 			{
 				throw new UnsupportedOperationException("Not supported yet.");
 			}
