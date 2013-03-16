@@ -33,9 +33,9 @@ public class Commandgive extends EssentialsCommand
 		final String itemname = stack.getType().toString().toLowerCase(Locale.ENGLISH).replace("_", "");
 		if (sender instanceof Player
 			&& (ess.getSettings().permissionBasedItemSpawn()
-				? (!ess.getUser(sender).isAuthorized("essentials.give.item-all")
-				   && !ess.getUser(sender).isAuthorized("essentials.give.item-" + itemname)
-				   && !ess.getUser(sender).isAuthorized("essentials.give.item-" + stack.getTypeId()))
+				? (!ess.getUser(sender).isAuthorized("essentials.itemspawn.item-all")
+				   && !ess.getUser(sender).isAuthorized("essentials.itemspawn.item-" + itemname)
+				   && !ess.getUser(sender).isAuthorized("essentials.itemspawn.item-" + stack.getTypeId()))
 				: (!ess.getUser(sender).isAuthorized("essentials.itemspawn.exempt")
 				   && !ess.getUser(sender).canSpawnItem(stack.getTypeId()))))
 		{
@@ -73,7 +73,7 @@ public class Commandgive extends EssentialsCommand
 		{
 			MetaItemStack metaStack = new MetaItemStack(stack);
 			boolean allowUnsafe = ess.getSettings().allowUnsafeEnchantments();			
-			if (allowUnsafe && sender instanceof Player && !ess.getUser(sender).isAuthorized("essentials.enchant.allowunsafe"))
+			if (allowUnsafe && sender instanceof Player && !ess.getUser(sender).isAuthorized("essentials.enchantments.allowunsafe"))
 			{
 				allowUnsafe = false;
 			}

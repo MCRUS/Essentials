@@ -243,7 +243,7 @@ public class Settings implements ISettings
 	{
 		Set<String> socialspyCommands = new HashSet<String>();
 
-		if (config.isConfigurationSection("socialspy-commands"))
+		if (config.isList("socialspy-commands"))
 		{
 			for (String c : config.getStringList("socialspy-commands"))
 			{
@@ -465,6 +465,7 @@ public class Settings implements ISettings
 		config.load();
 		noGodWorlds = new HashSet<String>(config.getStringList("no-god-in-worlds"));
 		enabledSigns = _getEnabledSigns();
+		teleportInvulnerabilityTime = _getTeleportInvulnerability();
 		teleportInvulnerability = _isTeleportInvulnerability();
 		disableItemPickupWhileAfk = _getDisableItemPickupWhileAfk();
 		registerBackInListener = _registerBackInListener();
@@ -956,13 +957,19 @@ public class Settings implements ISettings
 	{
 		this.metricsEnabled = metricsEnabled;
 	}
-	private boolean teleportInvulnerability;
+	private long teleportInvulnerabilityTime;
+
+	public long _getTeleportInvulnerability()
+	{
+		return config.getLong("teleport-invulnerability", 0) * 1000;
+	}
 
 	@Override
 	public long getTeleportInvulnerability()
 	{
-		return config.getLong("teleport-invulnerability", 0) * 1000;
+		return teleportInvulnerabilityTime;
 	}
+	private boolean teleportInvulnerability;
 
 	private boolean _isTeleportInvulnerability()
 	{

@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +27,7 @@ public class Commandenchant extends EssentialsCommand
 	protected void run(final Server server, final User user, final String commandLabel, final String[] args) throws Exception
 	{
 		final ItemStack stack = user.getItemInHand();
-		if (stack == null)
+		if (stack == null || stack.getType() == Material.AIR)
 		{
 			throw new Exception(_("nothingInHand"));
 		}
@@ -36,7 +37,7 @@ public class Commandenchant extends EssentialsCommand
 			for (Map.Entry<String, Enchantment> entry : Enchantments.entrySet())
 			{
 				final String enchantmentName = entry.getValue().getName().toLowerCase(Locale.ENGLISH);
-				if (enchantmentslist.contains(enchantmentName) || (user.isAuthorized("essentials.enchant." + enchantmentName) && entry.getValue().canEnchantItem(stack)))
+				if (enchantmentslist.contains(enchantmentName) || (user.isAuthorized("essentials.enchantments." + enchantmentName) && entry.getValue().canEnchantItem(stack)))
 				{
 					enchantmentslist.add(entry.getKey());
 					//enchantmentslist.add(enchantmentName);
@@ -58,7 +59,7 @@ public class Commandenchant extends EssentialsCommand
 			}
 		}
 
-		final boolean allowUnsafe = ess.getSettings().allowUnsafeEnchantments() && user.isAuthorized("essentials.enchant.allowunsafe");
+		final boolean allowUnsafe = ess.getSettings().allowUnsafeEnchantments() && user.isAuthorized("essentials.enchantments.allowunsafe");
 		
 		final MetaItemStack metaStack = new MetaItemStack(stack);
 		final Enchantment enchantment = metaStack.getEnchantment(user, args[0]);

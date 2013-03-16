@@ -23,8 +23,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -166,9 +166,17 @@ public class EssentialsPlayerListener implements Listener
 		{
 			return;
 		}
+
 		ess.getBackup().onPlayerJoin();
 		final User user = ess.getUser(player);
-		user.setLastLogin(System.currentTimeMillis());
+
+		if (user.isNPC())
+		{
+			user.setNPC(false);
+		}
+
+		final long currentTime = System.currentTimeMillis();
+		user.checkMuteTimeout(currentTime);
 		user.updateActivity(false);
 
 		ess.scheduleSyncDelayedTask(new Runnable()
@@ -176,6 +184,7 @@ public class EssentialsPlayerListener implements Listener
 			@Override
 			public void run()
 			{
+				user.setLastLogin(currentTime);
 				user.setDisplayNick();
 				updateCompass(user);
 
@@ -277,7 +286,6 @@ public class EssentialsPlayerListener implements Listener
 	{
 		switch (event.getResult())
 		{
-		case ALLOWED:
 		case KICK_FULL:
 		case KICK_BANNED:
 			break;
@@ -286,30 +294,25 @@ public class EssentialsPlayerListener implements Listener
 		}
 
 		final User user = ess.getUser(event.getPlayer());
-		if (user.isNPC())
-		{
-			user.setNPC(false);
-		}
 
-		final long currentTime = System.currentTimeMillis();
-		final boolean banExpired = user.checkBanTimeout(currentTime);
-		user.checkMuteTimeout(currentTime);
-		user.checkJailTimeout(currentTime);
-
-		if (!banExpired && (user.isBanned() || event.getResult() == Result.KICK_BANNED))
+		if (event.getResult() == Result.KICK_BANNED || user.isBanned())
 		{
-			String banReason = user.getBanReason();
-			if (banReason == null || banReason.isEmpty() || banReason.equalsIgnoreCase("ban"))
+			final boolean banExpired = user.checkBanTimeout(System.currentTimeMillis());
+			if (!banExpired)
 			{
-				banReason = _("defaultBanReason");
+				String banReason = user.getBanReason();
+				if (banReason == null || banReason.isEmpty() || banReason.equalsIgnoreCase("ban"))
+				{
+					banReason = _("defaultBanReason");
+				}
+				if (user.getBanTimeout() > 0)
+				{
+					//TODO: TL This
+					banReason += "\n\n" + "Expires in " + Util.formatDateDiff(user.getBanTimeout());
+				}
+				event.disallow(Result.KICK_BANNED, banReason);
+				return;
 			}
-			if (user.getBanTimeout() > 0)
-			{
-				//TODO: TL This
-				banReason += "\n\n" + "Expires in " + Util.formatDateDiff(user.getBanTimeout());
-			}
-			event.disallow(Result.KICK_BANNED, banReason);
-			return;
 		}
 
 		if (event.getResult() == Result.KICK_FULL && !user.isAuthorized("essentials.joinfullserver"))
@@ -439,7 +442,7 @@ public class EssentialsPlayerListener implements Listener
 				if (player.isAuthorized("essentials.sethome.bed"))
 				{
 					player.setBedSpawnLocation(event.getClickedBlock().getLocation());
-					player.sendMessage(_("homeSet", player.getLocation().getWorld().getName(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()));
+					player.sendMessage(_("bedSet", player.getLocation().getWorld().getName(), player.getLocation().getBlockX(), player.getLocation().getBlockY(), player.getLocation().getBlockZ()));
 				}
 			}
 			break;

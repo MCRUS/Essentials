@@ -74,7 +74,7 @@ public class Commandclearinventory extends EssentialsCommand
 			{
 				clearInventory(onlinePlayer, args[1]);
 			}
-			sender.sendMessage("Cleared everyone's inventory");
+			sender.sendMessage(_("inventoryClearedAll"));
 		}
 		else
 		{
@@ -125,6 +125,11 @@ public class Commandclearinventory extends EssentialsCommand
 		if (arg.equalsIgnoreCase("*"))
 		{
 			player.getInventory().clear();
+		}
+		else if (arg.equalsIgnoreCase("**"))
+		{
+			player.getInventory().clear();
+			player.getInventory().setArmorContents(null);
 		}
 		else
 		{

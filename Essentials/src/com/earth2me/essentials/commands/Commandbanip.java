@@ -1,9 +1,12 @@
 package com.earth2me.essentials.commands;
 
+import com.earth2me.essentials.Console;
 import static com.earth2me.essentials.I18n._;
 import com.earth2me.essentials.User;
+import java.util.logging.Level;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 
 public class Commandbanip extends EssentialsCommand
@@ -21,22 +24,33 @@ public class Commandbanip extends EssentialsCommand
 			throw new NotEnoughArgumentsException();
 		}
 
-		final User player = ess.getUser(args[0]);
+		final String senderName = sender instanceof Player ? ((Player)sender).getDisplayName() : Console.NAME;
+		final String ipAddress;
 
+		final User player = ess.getUser(args[0]);
 		if (player == null)
 		{
-			ess.getServer().banIP(args[0]);
-			sender.sendMessage(_("banIpAddress"));
+			ipAddress = args[0];
 		}
 		else
 		{
-			final String ipAddress = player.getLastLoginAddress();
+			ipAddress = player.getLastLoginAddress();
 			if (ipAddress.length() == 0)
 			{
 				throw new Exception(_("playerNotFound"));
 			}
-			ess.getServer().banIP(player.getLastLoginAddress());
-			sender.sendMessage(_("banIpAddress"));
+		}
+
+		ess.getServer().banIP(ipAddress);
+		server.getLogger().log(Level.INFO, _("playerBanIpAddress", senderName, ipAddress));
+
+		for (Player onlinePlayer : server.getOnlinePlayers())
+		{
+			final User onlineUser = ess.getUser(onlinePlayer);
+			if (onlinePlayer == sender || onlineUser.isAuthorized("essentials.ban.notify"))
+			{
+				onlinePlayer.sendMessage(_("playerBanIpAddress", senderName, ipAddress));
+			}
 		}
 	}
 }

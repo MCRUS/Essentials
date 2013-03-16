@@ -11,8 +11,8 @@ import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.inventory.*;
 import org.bukkit.inventory.InventoryView.Property;
+import org.bukkit.inventory.*;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
@@ -1165,6 +1165,30 @@ public class OfflinePlayer implements Player
 
 	@Override
 	public void resetMaxHealth()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setCustomName(String string)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public String getCustomName()
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public void setCustomNameVisible(boolean bln)
+	{
+		throw new UnsupportedOperationException("Not supported yet.");
+	}
+
+	@Override
+	public boolean isCustomNameVisible()
 	{
 		throw new UnsupportedOperationException("Not supported yet.");
 	}

@@ -1,10 +1,6 @@
 package com.earth2me.essentials.signs;
 
-import com.earth2me.essentials.ChargeException;
-import com.earth2me.essentials.IEssentials;
-import com.earth2me.essentials.SpawnMob;
-import com.earth2me.essentials.Trade;
-import com.earth2me.essentials.User;
+import com.earth2me.essentials.*;
 
 
 public class SignSpawnmob extends EssentialsSign
@@ -39,6 +35,7 @@ public class SignSpawnmob extends EssentialsSign
 		}
 
 		charge.charge(player);
+		Trade.log("Sign", "Spawnmob", "Interact", username, null, username, charge, sign.getBlock().getLocation(), ess);
 		return true;
 	}
 }
