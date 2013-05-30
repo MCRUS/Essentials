@@ -6,7 +6,6 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import net.ess3.api.IEssentials;
 import net.ess3.api.II18n;
@@ -20,7 +19,6 @@ public class I18n implements II18n
 	private Locale currentLocale = defaultLocale;
 	private ResourceBundle customBundle;
 	private ResourceBundle localeBundle;
-	private final ResourceBundle defaultBundle;
 	private final Map<String, MessageFormat> messageFormatCache = new HashMap<String, MessageFormat>();
 	private final IEssentials ess;
 
@@ -29,7 +27,6 @@ public class I18n implements II18n
 		this.ess = ess;
 		customBundle = ResourceBundle.getBundle(MESSAGES, defaultLocale, new FileResClassLoader(I18n.class.getClassLoader(), ess));
 		localeBundle = ResourceBundle.getBundle(MESSAGES, defaultLocale);
-		defaultBundle = ResourceBundle.getBundle(MESSAGES, Locale.ENGLISH);
 	}
 
 	public void onEnable()
@@ -63,14 +60,20 @@ public class I18n implements II18n
 		}
 		catch (MissingResourceException ex)
 		{
-			Logger.getLogger("Minecraft").log(
-					Level.WARNING, String.format(
-					"Missing translation key \"%s\" in translation file %s", ex.getKey(), localeBundle.getLocale().toString()), ex);
-			return defaultBundle.getString(string);
+			return string;
 		}
         catch (UnsupportedEncodingException ex) {
             return defaultBundle.getString(string);
         }
+	}
+
+	public static String _(final String string)
+	{
+		if (instance == null)
+		{
+			return "";
+		}
+		return instance.translate(string);
 	}
 
 	public static String _(final String string, final Object... objects)
@@ -95,12 +98,11 @@ public class I18n implements II18n
 		MessageFormat messageFormat = messageFormatCache.get(format);
 		if (messageFormat == null)
 		{
-			messageFormat = new MessageFormat(format);
+			messageFormat = new MessageFormat(format.replace("'", "''"));
 			messageFormatCache.put(format, messageFormat);
 		}
 		return messageFormat.format(objects);
 	}
-
 	private final Pattern partSplit = Pattern.compile("[_\\.]");
 
 	public void updateLocale(final String loc)
@@ -123,7 +125,7 @@ public class I18n implements II18n
 			currentLocale = new Locale(parts[0], parts[1], parts[2]);
 		}
 		ResourceBundle.clearCache();
-		Logger.getLogger("Minecraft").log(Level.INFO, String.format("Using locale %s", currentLocale.toString()));
+		ess.getLogger().log(Level.INFO, String.format("Using locale %s", currentLocale.toString()));
 		customBundle = ResourceBundle.getBundle(MESSAGES, currentLocale, new FileResClassLoader(I18n.class.getClassLoader(), ess));
 		localeBundle = ResourceBundle.getBundle(MESSAGES, currentLocale);
 	}

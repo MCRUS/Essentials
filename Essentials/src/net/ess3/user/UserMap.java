@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 
 public class UserMap extends StorageObjectMap<IUser> implements IUserMap
 {
-	private final Map<String, Player> prejoinedPlayers = new HashMap<String, Player>();
+	private final Map<String, Player> prejoinedPlayers = new HashMap<String, Player>(); //TODO: We shouldn't be using a player object here
 
 	public UserMap(final IEssentials ess)
 	{
@@ -141,7 +141,6 @@ public class UserMap extends StorageObjectMap<IUser> implements IUserMap
 	{
 		return matchUsers(name, false, false, requester);
 	}
-
 	private final Pattern comma = Pattern.compile(",");
 
 	public Set<IUser> matchUsers(final String name, final boolean includeHidden, final boolean includeOffline, final Player requester)

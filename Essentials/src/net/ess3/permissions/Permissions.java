@@ -21,6 +21,9 @@ public enum Permissions implements IPermission
 	BAN_EXEMPT,
 	BAN_NOTIFY,
 	BAN_OFFLINE,
+	BOOK_AUTHOR,
+	BOOK_OTHERS,
+	BOOK_TITLE,
 	BREAK_BEDROCK,
 	CHAT_COLOR,
 	CHAT_IGNORE_EXEMPT,
@@ -30,13 +33,14 @@ public enum Permissions implements IPermission
 	ECO_LOAN(PermissionDefault.FALSE),
 	ENCHANT_UNSAFE(PermissionDefault.FALSE),
 	ENDERCHEST_OTHERS,
-	ESSENTIALS,
 	EXP_GIVE,
 	EXP_GIVE_OTHERS,
 	EXP_SET,
 	EXP_SET_OTHERS,
 	EXP_OTHERS,
 	FEED_OTHERS,
+	FIREWORK_FIRE,
+	FIREWORK_MULTIPLE,
 	FLY_EXEMPT,
 	FLY_OTHERS,
 	FLY_SAFELOGIN,
@@ -64,6 +68,7 @@ public enum Permissions implements IPermission
 	KICK_EXEMPT,
 	KICK_NOTIFY,
 	KILL_FORCE,
+	KILL_EXEMPT,
 	LIST_HIDDEN,
 	LIGHTNING_OTHERS,
 	MAIL,
@@ -80,6 +85,7 @@ public enum Permissions implements IPermission
 	POWERTOOL_APPEND,
 	PTIME_OTHERS,
 	PVPDELAY_EXEMPT,
+	REPAIR_ALL,
 	REPAIR_ARMOR,
 	REPAIR_ENCHANTED,
 	SEEN_BANREASON,
@@ -165,7 +171,7 @@ public enum Permissions implements IPermission
 	{
 		return PermissionFactory.checkPermission(sender, this);
 	}
-
+	public static final DotStarPermission ESSENTIALS = new DotStarPermission("essentials.");
 	public static final DotStarPermission ENCHANT = new DotStarPermission("essentials.enchant");
 	public static final DotStarPermission PERGROUPTELEPORT = new DotStarPermission("essentials.teleport.groups");
 	public static final MaterialDotStarPermission GIVE = new MaterialDotStarPermission("essentials.give", PermissionDefault.TRUE);

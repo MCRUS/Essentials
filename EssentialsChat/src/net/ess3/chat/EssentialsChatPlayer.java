@@ -18,7 +18,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public abstract class EssentialsChatPlayer implements Listener
 {
 	protected IEssentials ess;
-	protected final static Logger LOGGER = Logger.getLogger("Minecraft");
 	protected final Server server;
 	protected final Map<AsyncPlayerChatEvent, ChatStore> chatStorage;
 
@@ -83,9 +82,10 @@ public abstract class EssentialsChatPlayer implements Listener
 		{
 			event.setFormat(
 					format.format(
-							new Object[]{
-									group, world, world.substring(0, 1).toUpperCase(Locale.ENGLISH)
-							}));
+					new Object[]
+					{
+						group, world, world.substring(0, 1).toUpperCase(Locale.ENGLISH)
+					}));
 		}
 	}
 

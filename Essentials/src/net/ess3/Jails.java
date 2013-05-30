@@ -6,13 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import static net.ess3.I18n._;
 import net.ess3.api.IEssentials;
 import net.ess3.api.IJails;
 import net.ess3.api.IUser;
 import net.ess3.storage.AsyncStorageObjectHolder;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,7 +28,6 @@ import org.bukkit.plugin.PluginManager;
 
 public class Jails extends AsyncStorageObjectHolder<net.ess3.settings.Jails> implements IJails
 {
-	private static final Logger LOGGER = Bukkit.getLogger();
 
 	public Jails(final IEssentials ess)
 	{
@@ -53,12 +50,12 @@ public class Jails extends AsyncStorageObjectHolder<net.ess3.settings.Jails> imp
 	{
 		if (getData().getJails() == null || jailName == null || !getData().getJails().containsKey(jailName.toLowerCase(Locale.ENGLISH)))
 		{
-			throw new Exception(_("jailNotExist"));
+			throw new Exception(_("§4That jail does not exist."));
 		}
 		Location loc = getData().getJails().get(jailName.toLowerCase(Locale.ENGLISH)).getStoredLocation();
 		if (loc == null || loc.getWorld() == null)
 		{
-			throw new Exception(_("jailNotExist"));
+			throw new Exception(_("§4That jail does not exist."));
 		}
 		return loc;
 	}
@@ -107,12 +104,19 @@ public class Jails extends AsyncStorageObjectHolder<net.ess3.settings.Jails> imp
 	@Override
 	public int getCount()
 	{
-		throw new UnsupportedOperationException("Not supported yet.");
+		try
+		{
+			return getList().size();
+		}
+		catch (Exception ex)
+		{
+			return 0;
+		}
 	}
+
 
 	private class JailBlockListener implements Listener
 	{
-
 		@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 		public void onBlockBreak(final BlockBreakEvent event)
 		{
@@ -174,11 +178,11 @@ public class Jails extends AsyncStorageObjectHolder<net.ess3.settings.Jails> imp
 			{
 				if (ess.getSettings().isDebug())
 				{
-					LOGGER.log(Level.INFO, _("returnPlayerToJailError", user.getName(), ex.getLocalizedMessage()), ex);
+					ess.getLogger().log(Level.INFO, _("§4Error occurred when trying to return player§c {0} §4to jail: {1}!", user.getName(), ex.getLocalizedMessage()), ex);
 				}
 				else
 				{
-					LOGGER.log(Level.INFO, _("returnPlayerToJailError", user.getName(), ex.getLocalizedMessage()));
+					ess.getLogger().log(Level.INFO, _("§4Error occurred when trying to return player§c {0} §4to jail: {1}!", user.getName(), ex.getLocalizedMessage()));
 				}
 			}
 		}
@@ -200,14 +204,14 @@ public class Jails extends AsyncStorageObjectHolder<net.ess3.settings.Jails> imp
 			{
 				if (ess.getSettings().isDebug())
 				{
-					LOGGER.log(Level.INFO, _("returnPlayerToJailError", user.getName(), ex.getLocalizedMessage()), ex);
+					ess.getLogger().log(Level.INFO, _("§4Error occurred when trying to return player§c {0} §4to jail: {1}!", user.getName(), ex.getLocalizedMessage()), ex);
 				}
 				else
 				{
-					LOGGER.log(Level.INFO, _("returnPlayerToJailError", user.getName(), ex.getLocalizedMessage()));
+					ess.getLogger().log(Level.INFO, _("§4Error occurred when trying to return player§c {0} §4to jail: {1}!", user.getName(), ex.getLocalizedMessage()));
 				}
 			}
-			user.sendMessage(_("jailMessage"));
+			user.sendMessage(_("§4You do the crime, you do the time."));
 		}
 
 		@EventHandler(priority = EventPriority.HIGHEST)
@@ -227,14 +231,14 @@ public class Jails extends AsyncStorageObjectHolder<net.ess3.settings.Jails> imp
 			{
 				if (ess.getSettings().isDebug())
 				{
-					LOGGER.log(Level.INFO, _("returnPlayerToJailError", user.getName(), ex.getLocalizedMessage()), ex);
+					ess.getLogger().log(Level.INFO, _("§4Error occurred when trying to return player§c {0} §4to jail: {1}!", user.getName(), ex.getLocalizedMessage()), ex);
 				}
 				else
 				{
-					LOGGER.log(Level.INFO, _("returnPlayerToJailError", user.getName(), ex.getLocalizedMessage()));
+					ess.getLogger().log(Level.INFO, _("§4Error occurred when trying to return player§c {0} §4to jail: {1}!", user.getName(), ex.getLocalizedMessage()));
 				}
 			}
-			user.sendMessage(_("jailMessage"));
+			user.sendMessage(_("§4You do the crime, you do the time."));
 		}
 	}
 }

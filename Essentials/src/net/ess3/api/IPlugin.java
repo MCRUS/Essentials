@@ -12,7 +12,7 @@ public interface IPlugin extends Plugin
 	/**
 	 * Get an instance of essentials
 	 *
-	 * @return
+	 * @return the instance
 	 */
 	IEssentials getEssentials();
 
@@ -40,8 +40,16 @@ public interface IPlugin extends Plugin
 	 * @return - BukkitTask for the task created
 	 */
 	BukkitTask runTaskLaterAsynchronously(final Runnable run, final long delay);
-	
-	BukkitTask runTaskTimerAsynchronously(final Runnable run, final long delay, final long delay2);
+
+	/**
+	 * Call an a-sync task to be run with a given delay
+	 *
+	 * @param run - Code to be run
+	 * @param delay - Long that represents how long to wait
+	 * @param period - Time to wait between every run after the first
+	 * @return - BukkitTask for the task created
+	 */
+	BukkitTask runTaskTimerAsynchronously(final Runnable run, final long delay, final long period);
 
 	/**
 	 * Schedule a sync (ran in main thread) delayed task
@@ -72,6 +80,10 @@ public interface IPlugin extends Plugin
 	 */
 	BukkitTask scheduleAsyncRepeatingTask(final Runnable run, final long delay, final long period);
 
+	/**
+	 *
+	 * @return
+	 */
 	File getRootFolder();
 
 	/**
@@ -128,8 +140,16 @@ public interface IPlugin extends Plugin
 	 */
 	boolean isModuleEnabled(String name);
 
+	/**
+	 *
+	 * @param plugin
+	 */
 	void onPluginEnable(Plugin plugin);
 
+	/**
+	 *
+	 * @param plugin
+	 */
 	void onPluginDisable(Plugin plugin);
 
 	/**

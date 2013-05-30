@@ -30,14 +30,15 @@ public class Commanditemdb extends EssentialsCommand
 		}
 		final Material itemType = itemStack.getType();
 		final int id = itemType.getId();
-		sender.sendMessage(itemStack.getType().toString() + "- " + id + ":" + Integer.toString(itemStack.getData().getData()));
+		final String data = Integer.toString(itemStack.getData().getData());
+		sender.sendMessage(_("ItemDatabaseResponse", itemStack.getType().toString(), id, data));
 		if (id != 0)
 		{
 			final int maxuses = itemType.getMaxDurability();
 			final int durability = ((maxuses + 1) - itemStack.getDurability());
 			if (maxuses != 0)
 			{
-				sender.sendMessage(_("durability", Integer.toString(durability)));
+				sender.sendMessage(_("§6This tool has §c{0}§6 uses left", Integer.toString(durability)));
 			}
 		}
 	}

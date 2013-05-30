@@ -10,8 +10,11 @@ public class NoLoanPermittedException extends Exception
 	 */
 	private static final long serialVersionUID = 1897047051293914036L;
 
+	/**
+	 *
+	 */
 	public NoLoanPermittedException()
 	{
-		super(_("negativeBalanceError"));
+		super(_("§4User is not allowed to have a negative balance."));
 	}
 }

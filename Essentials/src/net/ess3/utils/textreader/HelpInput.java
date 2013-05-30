@@ -3,7 +3,6 @@ package net.ess3.utils.textreader;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import static net.ess3.I18n._;
 import net.ess3.api.IEssentials;
 import net.ess3.api.ISettings;
@@ -15,16 +14,17 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 public class HelpInput implements IText
 {
+	protected final IEssentials ess;
 	private static final String DESCRIPTION = "description";
 	private static final String PERMISSION = "permission";
 	private static final String PERMISSIONS = "permissions";
 	private final List<String> lines = new ArrayList<String>();
 	private final List<String> chapters = new ArrayList<String>();
 	private final Map<String, Integer> bookmarks = new HashMap<String, Integer>();
-	private final static Logger logger = Logger.getLogger("Minecraft");
 
 	public HelpInput(final IUser user, final String match, final IEssentials ess) throws IOException
 	{
+		this.ess = ess;
 		final ISettings settings = ess.getSettings();
 		boolean reported = false;
 		final List<String> newLines = new ArrayList<String>();
@@ -32,7 +32,7 @@ public class HelpInput implements IText
 		String pluginNameLow = "";
 		if (!match.equalsIgnoreCase(""))
 		{
-			lines.add(_("helpMatching", match));
+			lines.add(_("§6Commands matching \"§c{0}§6\":", match));
 		}
 
 		for (Plugin p : ess.getServer().getPluginManager().getPlugins())
@@ -48,7 +48,7 @@ public class HelpInput implements IText
 				{
 					lines.clear();
 					newLines.clear();
-					lines.add(_("helpFrom", p.getDescription().getName()));
+					lines.add(_("§6Commands from {0}:", p.getDescription().getName()));
 				}
 
 				for (Map.Entry<String, Map<String, Object>> k : cmds.entrySet())
@@ -56,8 +56,8 @@ public class HelpInput implements IText
 					try
 					{
 						if (!match.equalsIgnoreCase("") && (!pluginNameLow.contains(match)) && (!k.getKey().toLowerCase(Locale.ENGLISH).contains(
-								match)) && (!(k.getValue().get(DESCRIPTION) instanceof String && ((String)k.getValue().get(DESCRIPTION)).toLowerCase(
-								Locale.ENGLISH).contains(match))))
+																								match)) && (!(k.getValue().get(DESCRIPTION) instanceof String && ((String)k.getValue().get(DESCRIPTION)).toLowerCase(
+																											  Locale.ENGLISH).contains(match))))
 						{
 							continue;
 						}
@@ -67,7 +67,7 @@ public class HelpInput implements IText
 							final String node = "essentials." + k.getKey();
 							if (!settings.getData().getCommands().isDisabled(k.getKey()) && user.hasPermission(node))
 							{
-								pluginLines.add(_("helpLine", k.getKey(), k.getValue().get(DESCRIPTION)));
+								pluginLines.add(_("§6/{0}§r: {1}", k.getKey(), k.getValue().get(DESCRIPTION)));
 							}
 						}
 						else
@@ -86,7 +86,7 @@ public class HelpInput implements IText
 								}
 								if (Permissions.HELP.isAuthorized(user, pluginNameLow))
 								{
-									pluginLines.add(_("helpLine", k.getKey(), value.get(DESCRIPTION)));
+									pluginLines.add(_("§6/{0}§r: {1}", k.getKey(), value.get(DESCRIPTION)));
 								}
 								else if (permissions instanceof List && !((List<Object>)permissions).isEmpty())
 								{
@@ -101,21 +101,21 @@ public class HelpInput implements IText
 									}
 									if (enabled)
 									{
-										pluginLines.add(_("helpLine", k.getKey(), value.get(DESCRIPTION)));
+										pluginLines.add(_("§6/{0}§r: {1}", k.getKey(), value.get(DESCRIPTION)));
 									}
 								}
 								else if (permissions instanceof String && !"".equals(permissions))
 								{
 									if (user.hasPermission(permissions.toString()))
 									{
-										pluginLines.add(_("helpLine", k.getKey(), value.get(DESCRIPTION)));
+										pluginLines.add(_("§6/{0}§r: {1}", k.getKey(), value.get(DESCRIPTION)));
 									}
 								}
 								else
 								{
 									if (!settings.getData().getCommands().getHelp().isHidePermissionlessCommands())
 									{
-										pluginLines.add(_("helpLine", k.getKey(), value.get(DESCRIPTION)));
+										pluginLines.add(_("§6/{0}§r: {1}", k.getKey(), value.get(DESCRIPTION)));
 									}
 								}
 							}
@@ -135,7 +135,7 @@ public class HelpInput implements IText
 					}
 					if (match.equalsIgnoreCase(""))
 					{
-						lines.add(_("helpPlugin", pluginName, pluginNameLow));
+						lines.add(_("§4{0}§r: Plugin Help: /help {1}", pluginName, pluginNameLow));
 					}
 				}
 			}
@@ -147,7 +147,7 @@ public class HelpInput implements IText
 			{
 				if (!reported)
 				{
-					logger.log(Level.WARNING, _("commandHelpFailedForPlugin", pluginNameLow), ex);
+					ess.getLogger().log(Level.WARNING, _("Error getting help for plugin: {0}", pluginNameLow), ex);
 				}
 				reported = true;
 				continue;
