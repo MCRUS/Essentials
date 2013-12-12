@@ -50,7 +50,7 @@ commands:
   broadcast:
     description: Broadcasts a message to the entire server.
     usage: /<command> <msg>
-    aliases: [ebroadcast,bcast,ebcast]
+    aliases: [ebroadcast,bcast,ebcast,shout,eshout,bc,ebc]
   bigtree:
     description: Spawn a big tree where you are looking.
     usage: /<command> <tree|redwood|jungle>
@@ -160,9 +160,9 @@ commands:
     usage: /<command> [search term] [page]
     aliases: [ehelp]
   helpop:
-    description: Request help from online operators.
+    description: Message online admins.
     usage: /<command> <message>
-    aliases: [ehelpop]
+    aliases: [ehelpop,amsg,eamsg,ac,eac,ehelpop]
   home:
     description: Teleport to your home.
     usage: /<command> [player:][name]
