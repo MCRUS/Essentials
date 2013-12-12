@@ -8,465 +8,465 @@ description: Provides an essential, core set of commands for Bukkit.
 authors: ["Essentials Team", "http://contributors.ess3.net"]
 commands:
   afk:
-    description: Marks you as away-from-keyboard.
+    description: Меняет Ваш статус на "Отошел".
     usage: /<command>
     aliases: [eafk]
   antioch:
-    description: A little surprise for operators.
+    description: Небольшой сюрприз для операторов.
     usage: /<command> [message]
     aliases: [eantioch,grenade,tnt,egrenade,etnt]
   back:
-    description: Teleports you to your location prior to tp/spawn/warp.
+    description: Возвращает на позицию до введения команды tp/spawn/warp.
     usage: /<command>
     aliases: [eback,return,ereturn]
   backup:
-    description: Runs the backup if configured.
+    description: Запуск создания резервной копии.
     usage: /<command>
     aliases: [ebackup]
   balance:
-    description: States the current balance of a player.
-    usage: /<command> [player]
+    description: Показывает баланс игрока.
+    usage: /<command> [игрок]
     aliases: [bal,money,emoney,ebalance,ebal]
   balancetop:
-    description: Gets the top balance values.
-    usage: /<command> [pagenumber|hide [player]|force]
+    description: Показывает топ балансов игроков.
+    usage: /<command> [pagenumber|hide [игрок]|force]
     aliases: [baltop,ebaltop,ebalancetop]
   ban:
-    description: Bans a player.
-    usage: /<command> <player> [reason]
+    description: Блокирует игрока.
+    usage: /<command> <игрок> [причина]
     aliases: [eban]
   banip:
-    description: Bans an IP address.
+    description: Блокирует IP адресс.
     usage: /<command> <address>
     aliases: [ebanip]
   book:
-    description: Allows reopening and editing of sealed books.
+    description: Позволяет открытие и редактирование запечатанных книг.
     usage: /<command> [title|author [name]]
     aliases: [ebook]
   break:
-    description: Breaks the block you are looking at.
+    description: Разрушает блок размещенный под курсором.
     usage: /<command>
     aliases: [ebreak]
   broadcast:
-    description: Broadcasts a message to the entire server.
+    description: Передает сообщение для всего сервера.
     usage: /<command> <msg>
     aliases: [ebroadcast,bcast,ebcast,shout,eshout,bc,ebc]
   bigtree:
-    description: Spawn a big tree where you are looking.
+    description: Создает большое дерево под курсором.
     usage: /<command> <tree|redwood|jungle>
     aliases: [ebigtree]
   burn:
-    description: Set a player on fire.
-    usage: /<command> <player> <seconds>
+    description: Зажигает игрока.
+    usage: /<command> <игрок> <seconds>
     aliases: [eburn]
   clearinventory:
-    description: Clear all items in your inventory.
+    description: Ичищает инвентарь.
     usage: /<command>
     aliases: [ci,eci,clearinvent,clean,eclean,eclearinvent,eclearinventory]
   compass:
-    description: Describes your current bearing.
+    description: Описывает Ваше текущее месторасположение.
     usage: /<command>
     aliases: [ecompass,direction,edirection]
   delhome:
-    description: Removes a home
+    description: Удаляет точку дома
     usage: /<command> [player:]<name>
     aliases: [edelhome,remhome,rmhome,eremhome,ermhome]
   deljail:
-    description: Removes a jail
+    description: Удаляет тюрьму
     usage: /<command> <jailname>
     aliases: [edeljail]
   delwarp:
-    description: Deletes the specified warp.
+    description: Удаляет указанный варп.
     usage: /<command> <warp>
     aliases: [edelwarp,remwarp,rmwarp,eremwarp,ermwarp]
   depth:
-    description: States current depth, relative to sea level.
+    description: Выводит высоту относительно уровня моря.
     usage: /depth
     aliases: [edepth]
   eco:
-    description: Manages the server economy.
-    usage: /<command> <give|take|reset> <player> <amount>
+    description: Управление экономикой сервера.
+    usage: /<command> <give|take|reset> <игрок> <amount>
     aliases: [economy,eeco,eeconomy]
   enchant:
-    description: Enchants the item the user is holding.
+    description: Зачаровывает предмет в руке.
     usage: /<command> <enchantmentname> [level]
     aliases: [enchantment,eenchant,eenchantment]
   enderchest:
-    description: Lets you see inside an enderchest.
-    usage: /<command> [player]
+    description: Открывает Ваш сундук ендера.
+    usage: /<command> [игрок]
     aliases: [endersee,echest,eenderchest,eendersee,eechest]
   essentials:
-    description: Reloads essentials.
+    description: Перезагружает Essentials.
     usage: /<command>
     aliases: [ess]
   exp:
-    description: Give, set or look at a players exp.
+    description: Пополнить, указать или узнать уровень опыта игрока.
     usage: /<command> [show|set|give] [playername [amount]]
     aliases: [eexp,xp]
   ext:
-    description: Extinguish players.
-    usage: /<command> [player]
+    description: Тушит игроков.
+    usage: /<command> [игрок]
     aliases: [extinguish,eext,eextinguish]
   feed:
-    description: Satisfy the hunger.
-    usage: /<command> [player]
+    description: Уталяет голод.
+    usage: /<command> [игрок]
     aliases: [efeed,eat,eeat]
   fly:
-    description: Take off, and soar!
-    usage: /<command> [player] [on|off]
+    description: Переключает режим полета!
+    usage: /<command> [игрок] [on|off]
     aliases: [efly]
   itemdb:
-    description: Searches for an item.
+    description: Ищет элемент.
     usage: /<command> <item>
     aliases: [eitemdb,itemno,eitemno,durability,dura,edura,edurability]
   fireball:
-    description: Throw a fireball.
+    description: Бросает огненый шар.
     usage: /<command> [small|skull]
     aliases: [efireball,fireskull,efireskull,fireentity,efireentity]
   firework:
-    description: Allows you to modify a stack of fireworks.
+    description: Позволяет изменять стак фейерверков.
     usage: /<command> <<meta param>|power [amount]|clear|fire [amount]>
     aliases: [efirework]
   gamemode:
-    description: Change player gamemode.
-    usage: /<command> [player]
+    description: Переключает игровой режик игрока.
+    usage: /<command> [игрок]
     aliases: [gm,creative,creativemode,egamemode,ecreative,ecreativemode,egm]
   getpos:
-    description: Get your current coordinates or those of a player.
-    usage: /<command> [player]
+    description: Показывает Ваши координаты или координаты указанного игрока.
+    usage: /<command> [игрок]
     aliases: [coords,egetpos,position,eposition,whereami,ewhereami]
   gc:
-    description: Reports garbage collection and tick info; useful to developers.
+    description: Показывает статистику по мусоры и ТПС; актуально для разработчиков.
     usage: /<command>
     aliases: [elag,lag,mem,memory,egc,emem,ememory]
   give:
-    description: Give a player an item.
-    usage: /<command> <player> <item|numeric> [amount <enchantmentname[:level]> ...]
+    description: Выдает игроку элемент.
+    usage: /<command> <игрок> <item|numeric> [amount <enchantmentname[:level]> ...]
     aliases: [egive]
   god:
-    description: Enables your godly powers.
-    usage: /<command> [player] [on|off]
+    description: Делает Вас богом.
+    usage: /<command> [игрок] [on|off]
     aliases: [tgm,godmode,egod,etgm,egodmode]
   hat:
-    description: Get some cool new headgear
+    description: Предоствляет новые шапки для игрока
     usage: /<command> [remove]
     aliases: [ehat]
   heal:
-    description: Heals you or the given player.
-    usage: /<command> [player]
+    description: Восстанвливает вашу жизнь или жизнь указанного игрока.
+    usage: /<command> [игрок]
     aliases: [eheal]
   help:
-    description: Views a list of available commands.
+    description: Показывает список доступных команд.
     usage: /<command> [search term] [page]
     aliases: [ehelp]
   helpop:
-    description: Message online admins.
+    description: Управление онлайн администрацией.
     usage: /<command> <message>
     aliases: [ehelpop,amsg,eamsg,ac,eac,ehelpop]
   home:
-    description: Teleport to your home.
+    description: Телепортирует Вас домой.
     usage: /<command> [player:][name]
     aliases: [ehome,homes,ehomes]
   ignore:
-    description: Ignore other players.
+    description: Игнорирование других игроков.
     usage: /<command> <player|list>
     aliases: [eignore]
   info:
-    description: Shows information set by the server owner
+    description: Показывает информацию указанную владельцем сервера.
     usage: /<command> [chapter] [page]
     aliases: [ifo,einfo,eabout,news,enews,eifo]
   invsee:
-    description: See the inventory of other players.
-    usage: /<command> <player>
+    description: Показывает инвентарь другого игрока.
+    usage: /<command> <игрок>
     aliases: [einvsee]
   item:
-    description: Spawn an item.
+    description: Создает элемент.
     usage: /<command> <item|numeric> [amount <enchantmentname[:level]> ...]
     aliases: [i,eitem]
   jails:
-    description: List all jails.
+    description: Список тюрем.
     usage: /<command>
     aliases: [ejails]
   jump:
-    description: Jumps to the nearest block in the line of sight.
+    description: Прыжок на блок под курсором.
     usage: /<command>
     aliases: [j,ej,jumpto,ejumpto,ejump]
   kick:
-    description: Kicks a specified player with a reason.
-    usage: /<command> <player> [reason]
+    description: Выбрасывает игрока сервера.
+    usage: /<command> <игрок> [причина]
     aliases: [ekick]
   kickall:
-    description: Kicks all players off the server except the issuer.
-    usage: /<command> [reason]
+    description: Выбрасывает с сервера всх игроков.
+    usage: /<command> [причина]
     aliases: [ekickall]
   kit:
-    description: Obtains the specified kit or views all available kits.
-    usage: /<command> [kit] [player]
+    description: Предоставляет указанный набор или список наборов.
+    usage: /<command> [kit] [игрок]
     aliases: [ekit,kits,ekits]
   kill:
-    description: Kills specified player.
-    usage: /<command> <player>
+    description: Убивает указанного игрока.
+    usage: /<command> <игрок>
     aliases: [ekill]
   killall:
-    description: Kill all mobs in a world.
+    description: Убивает всех мобов в мире.
     usage: /<command> [mobType] [radius]
     aliases: [ekillall,butcher,ebutcher,mobkill,emobkill]
   kittycannon:
-    description: Throw an exploding kitten at your opponent
+    description: Выбрасывает взрывающегося котенка на опонента.
     usage: /<command>
   list:
-    description: List all online players.
+    description: Показывет список игроков онлайн.
     usage: /<command>
     aliases: [playerlist,who,online,plist,eplist,elist,ewho,eplayerlist,eonline]
   lightning:
-    description: The power of Thor. Strike at cursor or player.
-    usage: /<command> [player] [power]
+    description: Сила Тора. Ударяет в точку под курсором или игрока.
+    usage: /<command> [игрок] [power]
     aliases: [strike,smite,thor,shock,elightning,estrike,esmite,ethor,eshock]
   mail:
-    description: Manages inter-player, intra-server mail.
+    description: Управляет внутриигровой почтой.
     usage: /<command> [read|clear|send [to] [message]|sendall [message]]
     aliases: [email]
   me:
-    description: Describes an action in the context of the player.
+    description: Описывает действие в контексте игрока.
     usage: /<command> <description>
     aliases: [action,describe,eme,eaction,edescribe]
   more:
-    description: Fills the item stack in hand to maximum size.
+    description: Увеличивает колличество елементов в стаке до максимума.
     usage: /<command> [all]
     aliases: [emore]
   motd:
-    description: Views the Message Of The Day.
+    description: Показывает сообщение дня.
     usage: /<command>
     aliases: [emotd]
   msg:
-    description: Sends a private message to the specified player.
+    description: Отправляет частное сообщение игроку.
     usage: /<command> <to> <message>
     aliases: [m,t,emsg,tell,etell,whisper,ewhisper]
   mute:
-    description: Mutes or unmutes a player.
-    usage: /<command> <player> [datediff]
+    description: Вбивает или вынимает кляп у игрока.
+    usage: /<command> <игрок> [datediff]
     aliases: [emute]
   near:
-    description: Lists the players near by or around a player
+    description: Показывает игроков находящихся рядом.
     usage: /<command> [playername] [radius]
     aliases: [nearby,enear,enearby]
   nick:
-    description: Change your nickname or that of another player.
-    usage: /<command> [player] <nickname|off>
+    description: Меняет Ваш ник или ник другого игрока.
+    usage: /<command> [игрок] <nickname|off>
     aliases: [enick]
   nuke:
-    description: May death rain upon them.
-    usage: /<command> [player]
+    description: Создает взрывной дождь.
+    usage: /<command> [игрок]
     aliases: [enuke]
   pay:
-    description: Pays another player from your balance
-    usage: /<command> <player> <amount>
+    description: Передает игругому игроку указанную сумму.
+    usage: /<command> <игрок> <amount>
     aliases: [epay]
   ping:
     description: Pong!
     usage: /<command>
     aliases: [pong,echo,echo,eping,epong]
   powertool:
-    description: Assigns a command to the item in hand.
+    description: Привязывает команду к предмету в руке.
     usage: /<command> [l:|a:|r:|c:|d:][command] [arguments] - {player} can be replaced by name of a clicked player.
     aliases: [pt,epowertool,ept]
   powertooltoggle:
-    description: Enables or disables all current powertools
+    description: Включает или выключает все супер интструменты.
     usage: /<command>
     aliases: [ptt,epowertooltoggle,pttoggle,epttoggle,eptt]
   ptime:
-    description: Adjust player's client time. Add @ prefix to fix.
+    description: Указывает время у игрока. Добавьте префикс @ для исправления.
     usage: /<command> [list|reset|day|night|dawn|17:30|4pm|4000ticks] [player|*]
     aliases: [playertime, eptime, eplayertime]
   r:
-    description: Quickly reply to the last player to message you.
+    description: Быстрый ответ на последнее частное сообщение.
     usage: /<command> <message>
     aliases: [er,reply,ereply]
   realname:
-    description: Displays the username of a user based on nick.
+    description: Показывает имя игрока основываясь на нике.
     usage: /<command> <nickname>
     aliases: [erealname]
   recipe:
-    description: Displays how to craft items.
+    description: Показывает рецепты крафта.
     usage: /<command> <item> [number]
     aliases: [erecipe]
   remove:
-    description: Removes entities in your world
+    description: Удаляет все сущности в мире.
     usage: /<command> <drops|arrows|boats|minecarts|xp|paintings> [radius]
     aliases: [eremove]
   repair:
-    description: Repairs the durability of all or one item.
+    description: Восстанавливает предмет в руке или все предмены.
     usage: /<command> <hand|all>
     aliases: [fix,erepair,efix]
   rules:
-    description: Views the server rules.
+    description: Показывает правила сервера.
     usage: /<command>
     aliases: [erules]
   seen:
-    description: Shows the last logout time of a player
+    description: Показывает время последнего выхода с сервера.
     usage: /<command> <playername>
     aliases: [eseen]
   sell:
-    description: Sells the item currently in your hand.
+    description: Продает предмет в руке.
     usage: /<command> <itemname|id|hand|inventory|blocks> [-][amount]
     aliases: [esell]
   sethome:
-    description: Set your home to your current location.
+    description: Указыват точку дома.
     usage: /<command> [[player:]name]
     aliases: [esethome]
   setjail:
-    description: Creates a jail where you specified named [jailname]
+    description: Создает тюрьму с указанным именем [jailname]
     usage: /<command> <jailname>
     aliases: [esetjail]
   setspawn:
-    description: Set the spawnpoint to your current position.
+    description: Пказывает точку спавна.
     usage: /<command> <group>
     aliases: [esetspawn]
   setwarp:
-    description: Creates a new warp.
+    description: Создает новый варп.
     usage: /<command> <warp>
     aliases: [createwarp,esetwarp]
   setworth:
-    description: Set the sell value of an item.
+    description: Указывает цену продаши элемента.
     usage: /<command> [itemname|id] <price>
     aliases: [esetworth]
   socialspy:
-    description: Toggles if you can see msg/mail commands in chat.
-    usage: /<command> [player] [on|off]
+    description: Переключает видимость скрытых команд в чате.
+    usage: /<command> [игрок] [on|off]
     aliases: [esocialspy]
   spawn:
-    description: Teleport to the spawnpoint.
-    usage: /<command> [player]
+    description: Телепортирует на спавн.
+    usage: /<command> [игрок]
     aliases: [espawn]
   spawner:
-    description: Change the mob type of a spawner
+    description: Указывает тип моба в спавнере.
     usage: /<command> <mob>
     aliases: [espawner,changems,echangems]
   spawnmob:
-    description: Spawns a mob.
-    usage: /<command> <mob>[:data][,<mount>[:data]] [amount] [player]
+    description: Создает моба.
+    usage: /<command> <mob>[:data][,<mount>[:data]] [amount] [игрок]
     aliases: [espawnmob,mob,emob]
   speed:
-    description: Change your speed limits
-    usage: /<command> <speed> [player]
+    description: Изменяет Вашу скорость.
+    usage: /<command> <speed> [игрок]
     aliases: [flyspeed,walkspeed,fspeed,wspeed,eflyspeed,ewalkspeed,efspeed,ewspeed,espeed]
   sudo:
-    description: Make another user perform a command.
-    usage: /<command> <player> <command [args]>
+    description: Вызывает команду от имени другого игрока.
+    usage: /<command> <игрок> <command [args]>
     aliases: [esudo]
   suicide:
-    description: Causes you to perish.
+    description: Самолинчевание.
     usage: /<command>
     aliases: [esuicide]
   tempban:
-    description: Temporary ban a user.
+    description: Временно блокирует игрока.
     usage: /<command> <playername> <datediff>
     aliases: [etempban]
   thunder:
-    description: Enable/disable thunder.
+    description: Включает/выключает гром.
     usage: /<command> <true/false> [duration]
     aliases: [ethunder]
   time:
-    description: Display/Change the world time. Defaults to current world.
+    description: Показывает/Измняет временя на сервере. По-умолчанию только в текущем мире.
     usage: /<command> [day|night|dawn|17:30|4pm|4000ticks] [worldname|all]
     aliases: [etime, day, night]
   togglejail:
-    description: Jails/Unjails a player and tp them to the jail specified.
-    usage: /<command> <player> <jailname> [datediff]
+    description: Садит или отпускает из тюрмы указанного игрока.
+    usage: /<command> <игрок> <jailname> [datediff]
     aliases: [tjail,jail,ejail,unjail,eunjail,etogglejail]
   top:
-    description: Teleport to the highest block at your current position.
+    description: Телепортирует на самую высокую точку.
     usage: /<command>
     aliases: [etop]
   tp:
-    description: Teleport to a player.
-    usage: /<command> <player> [otherplayer]
+    description: Телепортирует к игроку.
+    usage: /<command> <игрок> [otherplayer]
     aliases: [tele,teleport,eteleport,etele,etp,tp2p,etp2p]
   tpa:
-    description: Request to teleport to the specified player.
-    usage: /<command> <player>
+    description: Запрошивает разрешение на телепорт на игрока.
+    usage: /<command> <игрок>
     aliases: [call,tpask,etpask,etpa,ecall]
   tpaall:
-    description: Requests all players online to teleport to you.
-    usage: /<command> <player>
+    description: Разрашиает телефорт всех игроков.
+    usage: /<command> <игрок>
     aliases: [etpaall]
   tpaccept:
-    description: Accepts a teleport request.
+    description: Принимает запрос на телепортирование.
     usage: /<command> [otherplayer]
     aliases: [tpyes,etpaccept,etpyes]
   tpahere:
-    description: Request that the specified player teleport to you.
-    usage: /<command> <player>
+    description: Запрашивает телепортирование другого игрока к Вам.
+    usage: /<command> <игрок>
     aliases: [come,etpahere,ecome]
   tpall:
-    description: Teleport all online players to another player.
-    usage: /<command> <player>
+    description: Телепортирует всех игроков к другому игроку.
+    usage: /<command> <игрок>
     aliases: [etpall]
   tpdeny:
-    description: Reject a teleport request.
+    description: Откроняет запрос на телепортацию.
     usage: /<command>
     aliases: [tpno,etpdeny,etpno]
   tphere:
-    description: Teleport a player to you.
-    usage: /<command> <player>
+    description: Телепортирует игрока к Вам.
+    usage: /<command> <игрок>
     aliases: [s,etphere]
   tpo:
-    description: Teleport override for tptoggle.
-    usage: /<command> <player> [otherplayer]
+    description: Телепртирование с игнорированием tptoggle.
+    usage: /<command> <игрок> [otherplayer]
     aliases: [etpo]
   tpohere:
-    description: Teleport here override for tptoggle.
-    usage: /<command> <player>
+    description: Телепртирование к себе с игнорированием tptoggle.
+    usage: /<command> <игрок>
     aliases: [etpohere]
   tppos:
-    description: Teleport to coordinates.
+    description: Телепортирование на указанные координаты.
     usage: /<command> <x> <y> <z> [yaw] [pitch]
     aliases: [etppos]
   tptoggle:
-    description: Blocks all forms of teleportation.
+    description: Блокирует все формы телефортации.
     usage: /<command>
     aliases: [etptoggle]
   tree:
-    description: Spawn a tree where you are looking.
+    description: Создает дерево под курсором.
     usage: /<command> <tree|birch|redwood|redmushroom|brownmushroom|jungle|junglebush|swamp>
     aliases: [etree]
   unban:
-    description: Unbans the specified player.
-    usage: /<command> <player>
+    description: Разблокирование указанного игрока.
+    usage: /<command> <игрок>
     aliases: [pardon,eunban,epardon]
   unbanip:
-    description: Unbans the specified IP address.
+    description: Разблокирование указанного IP адреса.
     usage: /<command> <address>
     aliases: [eunbanip,pardonip,epardonip]
   unlimited:
-    description: Allows the unlimited placing of items.
-    usage: /<command> <list|item|clear> [player]
+    description: Разрешает размещение бесконечного колличества элементов.
+    usage: /<command> <list|item|clear> [игрок]
     aliases: [eunlimited,ul,unl,eul,eunl]
   vanish:
-    description: Hide yourself from other players.
+    description: Скрывает Вас от других игроков.
     usage: /<command> [on|off]
     aliases: [evanish]
   warp:
-    description: List all warps or warp to the specified location.
-    usage: /<command> <pagenumber|warp> [player]
+    description: Показывает список варпов или тепортирует на указанный варп.
+    usage: /<command> <pagenumber|warp> [игрок]
     aliases: [ewarp,warps,ewarps]
   weather:
-    description: Setting the weather.
+    description: Указывает погоду.
     usage: /<command> <storm/sun> [duration]
     aliases: [sky,sun,storm,eweather,esky,esun,estorm]
   whois:
-    description: Determine the username behind a nickname.
+    description: Показывает имя пользователя согласно нику.
     usage: /<command> <nickname>
     aliases: [ewhois]
   workbench:
-    description: Opens up a workbench
+    description: Открывает верстак
     usage: /<command>
     aliases: [eworkbench,wb,ewb,wbench,ewbench,craft,ecraft]
   world:
-    description: Switch between worlds.
+    description: Переключение между мирами.
     usage: /<command> [world]
     aliases: [eworld]
   worth:
-    description: Calculates the worth of items in hand or as specified.
+    description: Считает выручку от предметов в руке.
     usage: /<command> [item] [amount]
     aliases: [eworth,price,eprice]
