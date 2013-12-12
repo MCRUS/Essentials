@@ -1,4 +1,4 @@
-&6Welcome, {PLAYER}&6!
-&6Type &c/help&6 for a list of commands.
-&6Type &c/list&6 to see who else is online.
-&6Players online:&c {ONLINE} &6- World time:&c {WORLDTIME12}
+&6Добро пожаловать, {PLAYER}&6!
+&6Введите &c/help&6 для вывода команд.
+&6Введите &c/list&6 для вывода списка игроков онлайн.
+&6Игроков онлайн:&c {ONLINE} &6- Игрвое время:&c {WORLDTIME12}

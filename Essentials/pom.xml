@@ -125,7 +125,9 @@
 			<groupId>net.milkbowl</groupId>
 			<artifactId>vault</artifactId>
 			<version>1.2.27</version>
-		</dependency>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../lib/Vault.jar</systemPath>
+        </dependency>
 		<dependency>
 			<groupId>zPermissions</groupId>
 			<artifactId>zPermissions</artifactId>
